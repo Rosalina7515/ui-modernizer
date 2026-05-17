@@ -113,6 +113,33 @@ Framework-specific reminders:
 - **Vue:** never edit `<script>` / `<script setup>` blocks. `:class` array/object bindings: edit string literals only, never variables.
 - **Svelte:** never edit `<script>` blocks. `class:foo={bool}` directives: leave the keys alone — they're tied to component state. Only the static `class=` portion is fair game.
 
+### Step 5b — COMPONENT SUBSTITUTION (opt-in only — v0.5)
+
+**Only run this step** if the user's request explicitly mentions one of:
+- "and use shadcn (components / primitives)"
+- "with shadcn components"
+- "and substitute components"
+- "replace the primitives"
+- "auto-install shadcn"
+
+Otherwise **skip directly to Step 6**.
+
+If opted in:
+
+1. **DETECT**: `node scripts/detect-substitutions.mjs --pretty`. Output: table of candidates + install command.
+2. **SHOW PLAN**: Display the table to the user. State which shadcn components will be installed and how many candidate elements will be rewritten.
+3. **CONFIRM**: Ask: "Run `npx shadcn@latest add <list>` and rewrite N elements? (y/n/pick files)". Wait for confirmation. If they decline → skip the rest of Step 5b.
+4. **INIT (if needed)**: If `components.json` does not exist in the project root, run `npx shadcn@latest init` first. This is **interactive** — surface the prompts to the user verbatim, don't try to auto-answer.
+5. **INSTALL**: Run the `installCommand` from the detect output. If install fails: STOP, surface the error, do NOT proceed with rewrites — leaving the codebase mid-substitution is worse than not starting.
+6. **REWRITE**: For each entry in `perFile`, edit the file per the rules in `references/shadcn-component-map.md`. Always:
+   - Add the import to the top of the file (deduplicate against existing imports).
+   - Preserve every event handler / ref / `aria-*` / `data-*` / `disabled` / `required` / `id` / `name` / `placeholder` / `type` / `value` / `htmlFor`.
+   - Drop only the visual-identity `className` content (palette / padding / radius / shadow / hover / focus).
+   - Keep layout-only utilities in `className` (`mx-auto`, `mt-4`, etc.).
+7. **TYPECHECK**: If `tsconfig.json` exists, run the project's typecheck script (`npm run typecheck`, or `npx tsc --noEmit` if not defined). On error: **roll back the substitution edits using the Step 3 backup** and continue with Steps 6 + 7. The className modernization still stands; only the substitution layer is reverted.
+
+Vue / Svelte note: substitution targets the `shadcn-vue` / `shadcn-svelte` ports. If the project doesn't have those set up and the user declines to set them up, **skip Step 5b entirely** and tell them in the report.
+
 ### Step 6 — SCREENSHOT AFTER
 
 Run `node scripts/screenshot.mjs after`. Same routes, saves to `.ui-modernizer/screenshots/after/`. Then run `node scripts/compose-before-after.mjs` to produce `.ui-modernizer/before-after.png`.
@@ -174,3 +201,6 @@ Style profiles are Markdown files describing a specific aesthetic. They override
 | `@babel/parser` not available | Fall back to regex-guarded className edits (only edit lines containing `className=`) |
 | `detect-stack` says v4 but globals.css has `@tailwind base;` | Project is mid-migration. STOP — ask the user whether to treat as v3 or v4. |
 | `detect-brand` returns `single-value` shape | Only use `bg-<prefix>-600`; for hover use `bg-<prefix>-600/90` (opacity), not `-700` which may not exist. |
+| `npx shadcn add` fails mid-substitution | STOP. Restore from backup. Continue with Step 6+7 — className changes still hold. Note in report. |
+| `components.json` missing & user declines init | Skip Step 5b entirely. State in report: "shadcn not initialized — substitution skipped". |
+| TypeScript typecheck fails after substitution | Roll back substitution edits only (Step 3 backup), preserve className modernization, note files in report. |

@@ -2,6 +2,34 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.5.0] — 2026-05-17
+
+### Added
+- **Component substitution.** Opt-in via *"modernize this UI **and use shadcn**"* (or *"with shadcn components"*, *"replace primitives"*, *"auto-install shadcn"*). The Skill now:
+  1. Scans every UI file via `scripts/detect-substitutions.mjs` (new) for hand-rolled native elements that match shadcn primitive shapes.
+  2. Shows a plan: which shadcn components will be installed, how many candidates, which files.
+  3. Asks the user to confirm.
+  4. Initializes shadcn (interactively) if `components.json` is missing.
+  5. Runs `npx shadcn@latest add <list>`.
+  6. Rewrites the candidate elements, adds imports, preserves every event handler / ref / `aria-*` / `data-*`.
+  7. Type-checks afterward (if TypeScript present); on failure, rolls back substitution edits while preserving the className modernization.
+- **7 substitution rules** in MVP — Button, Input, Textarea, Label, Badge, Separator, Avatar — with variant + size inference from class signatures.
+- **Card pattern recognition** documented in `references/shadcn-component-map.md` — multi-child cards are rewritten to `<Card>` + `<CardHeader>` + `<CardContent>`.
+- New reference: `references/component-substitution.md` — opt-in trigger, 5-stage workflow, safety rules, framework notes (shadcn-vue / shadcn-svelte for non-React projects).
+- New reference: `references/shadcn-component-map.md` — per-pattern rewriting guide, variant detection table, universal preserve / drop lists.
+- New script: `scripts/detect-substitutions.mjs` — read-only detector; outputs JSON plan or `--pretty` table; supports `--files a.tsx,b.tsx` override.
+
+### Changed
+- `SKILL.md` — inserted Step 5b (COMPONENT SUBSTITUTION) between APPLY and SCREENSHOT-AFTER, gated on user opt-in language. Added 3 new failure-mode rows.
+- README × 2 — added a "Want shadcn primitives? Just ask." subsection under "Pick a vibe".
+
+### Not changed
+- All previous-version detectors (stack / brand / profiles) — unchanged.
+- Backup / rollback / report flow — unchanged. The new substitution layer is *additionally* rolled back if typecheck fails.
+- Vue / Svelte path: substitution runs against `shadcn-vue` / `shadcn-svelte` ports; if those aren't set up, the step is skipped (not failed).
+
+---
+
 ## [0.4.0] — 2026-05-17
 
 ### Added

@@ -76,6 +76,16 @@ modernize this UI using ./design/our-brand.md
 
 详见 [可插拔风格 profile](./references/profile-pluggability.md) 和 [profile 格式规范](./references/style-references/_PROFILE_FORMAT.md)。
 
+### 🧱 想直接换成 shadcn 组件？加一句话就行。
+
+```
+modernize this UI and use shadcn components
+```
+
+ui-modernizer 会扫你的项目，找出手写的 `<button>` / `<input>` / `<span class="徽章状">` / card 模式，自动跑 `npx shadcn@latest add ...` 安装所需组件，然后改写成 `<Button>` / `<Input>` / `<Badge>` / `<Card>` —— 完整保留所有事件 handler、ref 和 `aria-*`。
+
+完整流程和安全规则见 [`references/component-substitution.md`](./references/component-substitution.md)。
+
 ---
 
 ## 🛡️ 设计上就安全
@@ -160,7 +170,7 @@ cd ../after && npm install && npm run dev
 - [x] **v0.2** —— Tailwind v4 支持，自动检测品牌色
 - [x] **v0.3** —— Vue 3（Nuxt / Vite）+ Svelte 5（SvelteKit / Vite）支持
 - [x] **v0.4** —— 可插拔风格 profile（7 个内置 + 自带 Markdown）
-- [ ] **v0.5** —— 组件级替换（自动 install shadcn primitives）
+- [x] **v0.5** —— 组件级替换（自动 install shadcn primitives）
 - [ ] **v1.0** —— 视觉回归测试（对照设计规范）
 
 ---

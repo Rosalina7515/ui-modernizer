@@ -76,6 +76,16 @@ modernize this UI using ./design/our-brand.md
 
 See [Pluggable style profiles](./references/profile-pluggability.md) and [the profile format spec](./references/style-references/_PROFILE_FORMAT.md).
 
+### 🧱 Want shadcn primitives? Just ask.
+
+```
+modernize this UI and use shadcn components
+```
+
+ui-modernizer scans your project for hand-rolled `<button>` / `<input>` / `<span class="badge-shape">` / card patterns, runs `npx shadcn@latest add ...` for what it needs, then rewrites them to `<Button>` / `<Input>` / `<Badge>` / `<Card>` — preserving every event handler, ref, and `aria-*` along the way.
+
+Read [`references/component-substitution.md`](./references/component-substitution.md) for the full workflow and safety rules.
+
 ---
 
 ## 🛡️ Safe by design
@@ -160,7 +170,7 @@ cd ../after && npm install && npm run dev
 - [x] **v0.2** — Tailwind v4 support, custom brand color detection
 - [x] **v0.3** — Vue 3 (Nuxt / Vite) + Svelte 5 (SvelteKit / Vite) support
 - [x] **v0.4** — Pluggable style profiles (7 built-in + bring-your-own Markdown)
-- [ ] **v0.5** — Component substitution (auto-install shadcn primitives)
+- [x] **v0.5** — Component substitution (auto-install shadcn primitives)
 - [ ] **v1.0** — Visual regression checks against design-system specs
 
 ---
