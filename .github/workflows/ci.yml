@@ -1,0 +1,30 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Skill structure sanity
+        run: |
+          test -f SKILL.md
+          test -f package.json
+          test -f bin/install.mjs
+          test -f scripts/detect-stack.mjs
+          test -f scripts/backup.mjs
+          test -f scripts/screenshot.mjs
+          test -f scripts/report.mjs
+          test -f references/design-system-2026.md
+          test -f references/tailwind-modernization.md
+      - name: Install script syntax check
+        run: node --check bin/install.mjs
+      - name: Scripts syntax check
+        run: |
+          for f in scripts/*.mjs; do node --check "$f"; done

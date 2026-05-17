@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+dist
+build
+.DS_Store
+.env*
+!.env.example
+.ui-modernizer
+.ui-modernizer-backup
+*.log
+.idea
+.vscode
+coverage
