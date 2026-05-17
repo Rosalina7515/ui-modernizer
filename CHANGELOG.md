@@ -2,6 +2,32 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.3.0] — 2026-05-17
+
+### Added
+- **Vue 3 support** — Nuxt 3 *and* Vue + Vite both supported. Detector recognizes Nuxt by the `nuxt` dependency and walks `pages/`, `components/`, `layouts/`, `app.vue`. Globals CSS is located at the Nuxt-conventional `assets/css/main.css` (or fall-throughs).
+- **Svelte 5 support** — SvelteKit *and* Svelte + Vite both supported. Detector recognizes SvelteKit by `@sveltejs/kit` and walks `src/routes/`, `src/lib/`, `src/components/`. Globals CSS is located at `src/app.css` / `src/app.postcss`.
+- **Runtime + framework abstraction.** `detect-stack.mjs` now reports:
+  - `runtime`: `'react' | 'vue' | 'svelte'`
+  - `framework`: `'next' | 'nuxt' | 'sveltekit' | 'vite'`
+  - `classAttr`: `'className'` (React) or `'class'` (Vue/Svelte)
+  - `fileExtensions`: `['.tsx', '.jsx']` / `['.vue']` / `['.svelte']`
+- New reference: `references/frameworks/vue.md` — `class=` vs `:class=` array/object syntax, `<script setup>` boundaries, Nuxt conventions, auto-imports.
+- New reference: `references/frameworks/svelte.md` — `class=` vs `class:foo={bool}` directives, SvelteKit `+layout.svelte` / `+page.svelte` conventions, scoped `<style>` blocks.
+
+### Changed
+- `SKILL.md` Step 1 now announces detected runtime, framework, Tailwind flavor, and accent in one line.
+- `SKILL.md` Step 2 PLAN now uses `uiFiles[]` from the detector (which uses the right roots + extensions per runtime).
+- `SKILL.md` Step 5 APPLY now references the framework guide and re-states the framework-specific skip lists.
+- `references/tailwind-modernization.md` — added a v0.3 framework-agnostic note clarifying that all examples are JSX but class strings work identically in `class=` for Vue/Svelte.
+- `package.json` — added `vue`, `nuxt`, `svelte`, `sveltekit` to keywords; description now lists all three runtimes.
+
+### Not changed (deliberate)
+- All visual rules in `design-system-2026.md`, `tailwind-modernization.md`, `component-patterns.md` — class names are framework-agnostic, so no edits needed.
+- Backup / rollback / report behavior — fully framework-agnostic, kept stable.
+
+---
+
 ## [0.2.0] — 2026-05-17
 
 ### Added

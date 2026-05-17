@@ -6,7 +6,7 @@
 
 ### One prompt. Modern UI.
 
-**A Claude Code Skill that turns your tired React + Tailwind UI into a 2026 SaaS product.**
+**A Claude Code Skill that turns your tired React / Vue / Svelte + Tailwind UI into a 2026 SaaS product.**
 Linear · Vercel · Stripe · shadcn — pick a vibe, get the look.
 
 ```
@@ -32,7 +32,7 @@ npx ui-modernizer
 
 That's it. The Skill is now available in any project you open with Claude Code.
 
-Then in Claude Code, in any React + Next.js + Tailwind project:
+Then in Claude Code, in any React/Vue/Svelte + Tailwind project:
 
 ```
 modernize this UI
@@ -113,17 +113,18 @@ Knowledge is split into Markdown files that Claude reads on demand — so you ca
 
 ---
 
-## 📦 Supported stacks (MVP)
+## 📦 Supported stacks
 
 | | Status |
 |---|---|
-| React | ✅ |
-| Next.js (App Router) | ✅ |
-| Next.js (Pages Router) | ✅ |
+| React + Next.js (App Router) | ✅ |
+| React + Next.js (Pages Router) | ✅ |
+| Vue 3 + Nuxt 3 | ✅ |
+| Vue 3 + Vite | ✅ |
+| Svelte 5 + SvelteKit | ✅ |
+| Svelte 5 + Vite | ✅ |
 | Tailwind CSS v3 | ✅ |
 | Tailwind CSS v4 | ✅ |
-| Vue + Tailwind | 🛠 v0.3 |
-| Svelte + Tailwind | 🛠 v0.3 |
 | styled-components | ❌ out of scope |
 | CSS Modules | ❌ out of scope |
 
@@ -146,7 +147,7 @@ cd ../after && npm install && npm run dev
 
 - [x] **v0.1** — MVP: React + Next.js + Tailwind v3, 10 modernization rules, backup/rollback
 - [x] **v0.2** — Tailwind v4 support, custom brand color detection
-- [ ] **v0.3** — Vue 3 + Svelte 5 support
+- [x] **v0.3** — Vue 3 (Nuxt / Vite) + Svelte 5 (SvelteKit / Vite) support
 - [ ] **v0.4** — Pluggable style profiles (community brands)
 - [ ] **v0.5** — Component substitution (auto-install shadcn primitives)
 - [ ] **v1.0** — Visual regression checks against design-system specs

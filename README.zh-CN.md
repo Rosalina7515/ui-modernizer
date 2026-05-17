@@ -6,7 +6,7 @@
 
 ### 一句话提示，UI 焕然一新。
 
-**一个 Claude Code Skill，把你的旧 React + Tailwind UI 一键升级成 2026 年的 SaaS 产品级界面。**
+**一个 Claude Code Skill，把你的旧 React / Vue / Svelte + Tailwind UI 一键升级成 2026 年的 SaaS 产品级界面。**
 Linear · Vercel · Stripe · shadcn —— 挑一个风格，直接拥有同款质感。
 
 ```
@@ -32,7 +32,7 @@ npx ui-modernizer
 
 完事。这个 Skill 已经装进你的 Claude Code，所有项目都能调用。
 
-然后在 Claude Code 里，任何 React + Next.js + Tailwind 项目中输入：
+然后在 Claude Code 里，任何 React / Vue / Svelte + Tailwind 项目中输入：
 
 ```
 modernize this UI
@@ -113,17 +113,18 @@ npx ui-modernizer rollback
 
 ---
 
-## 📦 支持的技术栈（MVP）
+## 📦 支持的技术栈
 
 | | 状态 |
 |---|---|
-| React | ✅ |
-| Next.js（App Router） | ✅ |
-| Next.js（Pages Router） | ✅ |
+| React + Next.js（App Router） | ✅ |
+| React + Next.js（Pages Router） | ✅ |
+| Vue 3 + Nuxt 3 | ✅ |
+| Vue 3 + Vite | ✅ |
+| Svelte 5 + SvelteKit | ✅ |
+| Svelte 5 + Vite | ✅ |
 | Tailwind CSS v3 | ✅ |
 | Tailwind CSS v4 | ✅ |
-| Vue + Tailwind | 🛠 v0.3 |
-| Svelte + Tailwind | 🛠 v0.3 |
 | styled-components | ❌ 不在范围 |
 | CSS Modules | ❌ 不在范围 |
 
@@ -146,7 +147,7 @@ cd ../after && npm install && npm run dev
 
 - [x] **v0.1** —— MVP：React + Next.js + Tailwind v3、10 条现代化规则、备份/回滚
 - [x] **v0.2** —— Tailwind v4 支持，自动检测品牌色
-- [ ] **v0.3** —— Vue 3 + Svelte 5 支持
+- [x] **v0.3** —— Vue 3（Nuxt / Vite）+ Svelte 5（SvelteKit / Vite）支持
 - [ ] **v0.4** —— 可插拔的风格 profile（社区贡献品牌）
 - [ ] **v0.5** —— 组件级替换（自动 install shadcn primitives）
 - [ ] **v1.0** —— 视觉回归测试（对照设计规范）

@@ -7,6 +7,13 @@ Apply these substitutions when editing `className` strings. Mappings are ordered
 > **Brand color note (v0.2):** Every occurrence of `indigo` below is a *placeholder*. Substitute the `classPrefix` returned by `scripts/detect-brand.mjs` (one of `brand` / `primary` / `accent` / `indigo` fallback) before writing the class. See `references/brand-color-strategy.md` for the substitution rules and edge cases.
 >
 > **Tailwind v4 note (v0.2):** If `scripts/detect-stack.mjs` reports `tailwind.flavor === 'v4'`, also read `references/tailwind-v4.md` — a handful of class names changed (`flex-shrink-0` → `shrink-0`, etc.) and the globals.css template is different.
+>
+> **Framework note (v0.3):** Every example below uses JSX (`className=`). The Tailwind class strings themselves are **framework-agnostic** — they work identically in:
+> - React / Next.js → `className="..."`
+> - Vue / Nuxt → `class="..."` (and inside `:class="[...]"` / `:class="{...}"`)
+> - Svelte / SvelteKit → `class="..."` (leave `class:foo={bool}` directives alone)
+>
+> Use `classAttr` from `detect-stack.mjs` output when emitting code. See `references/frameworks/vue.md` and `references/frameworks/svelte.md` for the per-framework rules.
 
 ## Colors — grays
 

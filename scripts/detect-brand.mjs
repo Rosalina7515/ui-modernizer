@@ -35,8 +35,14 @@ const configCandidates = [
   'src/tailwind.config.ts', 'src/tailwind.config.js',
 ];
 const cssCandidates = [
+  // Next.js
   'app/globals.css', 'src/app/globals.css',
   'styles/globals.css', 'src/styles/globals.css',
+  // Nuxt 3
+  'assets/css/main.css', 'assets/main.css',
+  // SvelteKit / Vite
+  'src/app.css', 'src/app.postcss', 'src/styles/app.css',
+  'src/style.css', 'src/styles/index.css', 'src/main.css',
 ];
 
 function detectInTailwindConfig() {

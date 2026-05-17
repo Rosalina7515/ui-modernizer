@@ -1,6 +1,6 @@
 ---
 name: ui-modernizer
-description: Modernize a React + Next.js + Tailwind UI to 2026 SaaS-grade design (Linear / Vercel / Stripe / shadcn aesthetic). Trigger when the user says "modernize this UI", "modernize the UI", "upgrade the design", "make this look modern", "make the UI look like Linear/Vercel/Stripe", or otherwise asks to refresh / level-up the visual design of a frontend codebase. Do NOT use for new feature work, bug fixes, or business logic changes.
+description: Modernize a React/Vue/Svelte + Tailwind UI to 2026 SaaS-grade design (Linear / Vercel / Stripe / shadcn aesthetic). Supports Next.js, Nuxt 3, SvelteKit, and Vite. Trigger when the user says "modernize this UI", "modernize the UI", "upgrade the design", "make this look modern", "make the UI look like Linear/Vercel/Stripe", or otherwise asks to refresh / level-up the visual design of a frontend codebase. Do NOT use for new feature work, bug fixes, or business logic changes.
 ---
 
 # UI Modernizer
@@ -29,22 +29,41 @@ Execute these steps sequentially. Announce each step in one short sentence befor
 
 Run **two** detection scripts in this order:
 
-1. `node scripts/detect-stack.mjs` — confirms React + Next.js + Tailwind. Output includes `tailwind.flavor` (`'v3' | 'v4' | 'unknown'`). Branch the rest of the workflow on this.
+1. `node scripts/detect-stack.mjs` — confirms a supported runtime + framework + Tailwind. Key output fields you must read:
+   - `runtime` — `'react' | 'vue' | 'svelte'`
+   - `framework` — `'next' | 'nuxt' | 'sveltekit' | 'vite'`
+   - `classAttr` — `'className'` for React, `'class'` for Vue/Svelte
+   - `fileExtensions` — `['.tsx', '.jsx']` / `['.vue']` / `['.svelte']`
+   - `tailwind.flavor` — `'v3' | 'v4'`
 2. `node scripts/detect-brand.mjs` — looks for an existing brand / primary / accent color so we use *that* instead of forcing indigo. Output includes `classPrefix` (`'brand' | 'primary' | 'accent' | 'indigo'`). **Remember this value** — every later step substitutes it into class strings.
 
-Required stack:
-- React present
-- Next.js present (App Router preferred; Pages Router supported)
-- Tailwind CSS v3 **or v4** configured
+Supported runtime + framework combinations:
+- **React + Next.js** (App Router preferred; Pages Router supported)
+- **Vue 3 + Nuxt 3** *or* **Vue 3 + Vite**
+- **Svelte 5 + SvelteKit** *or* **Svelte 5 + Vite**
+
+Tailwind CSS v3 **or v4** must be configured.
 
 If any required check fails: STOP and tell the user which prerequisite is missing. Do not proceed.
 
-Once detection succeeds, announce: "Detected React + Next.js + Tailwind **{flavor}**, accent: **{classPrefix}**."
+Once detection succeeds, announce: "Detected **{runtime}** + **{framework}** + Tailwind **{flavor}**, accent: **{classPrefix}**."
+
+Based on `runtime`, load the appropriate framework reference for Step 5:
+- `react` → no extra file (default behavior)
+- `vue` → `references/frameworks/vue.md`
+- `svelte` → `references/frameworks/svelte.md`
 
 ### Step 2 — PLAN
 
-Walk the project's UI files (`app/**/*.{tsx,jsx}`, `components/**/*.{tsx,jsx}`, `src/**/*.{tsx,jsx}`). Build a short plan listing:
-- Files to modify (max 30 in MVP — if more, focus on `app/` and shared `components/`)
+Walk the project's UI files. The roots and extensions depend on `runtime`:
+- **React:** `app/**`, `components/**`, `src/**` with extensions `.tsx`, `.jsx`
+- **Vue:** `pages/**`, `components/**`, `layouts/**`, `app.vue`, `src/**` with extension `.vue`
+- **Svelte:** `src/routes/**`, `src/lib/**`, `src/components/**` with extension `.svelte`
+
+`detect-stack.mjs` already returns `uiFiles[]` — use that list as the starting set.
+
+Build a short plan listing:
+- Files to modify (max 30 in MVP — if more, focus on layouts and shared components)
 - Modernization dimensions per file (spacing / typography / color / radius / shadow / hover / dark mode / motion)
 - Estimated visual impact (high / medium / low)
 
@@ -65,7 +84,7 @@ If Playwright is not installed, the script prints the install command — relay 
 
 ### Step 5 — APPLY MODERNIZATION
 
-For each planned file, edit ONLY `className` strings and styling files, applying rules from:
+For each planned file, edit ONLY the class attribute (`className` for React, `class` for Vue/Svelte) and styling files, applying rules from:
 - `references/design-system-2026.md` — palette, scale, radius, shadow tokens
 - `references/tailwind-modernization.md` — exhaustive old→new class mapping
 - `references/component-patterns.md` — Button / Card / Input / Modal / Nav templates
@@ -73,6 +92,8 @@ For each planned file, edit ONLY `className` strings and styling files, applying
 - `references/dark-mode.md` — dark variant strategy
 - `references/brand-color-strategy.md` — **always** substitute `indigo` placeholders with the `classPrefix` returned by Step 1. Read this *before* writing any `bg-indigo-*` / `text-indigo-*` / `ring-indigo-*` class.
 - If `tailwind.flavor === 'v4'`: **also** read `references/tailwind-v4.md` — class names, theme block, and CSS-first config differ from v3.
+- If `runtime === 'vue'`: **also** read `references/frameworks/vue.md` — `class=` vs `:class=`, array/object bindings, `<script setup>` boundaries.
+- If `runtime === 'svelte'`: **also** read `references/frameworks/svelte.md` — `class=` vs `class:foo={bool}` directives, `+layout.svelte` conventions.
 
 Apply globally — but branch on Tailwind flavor:
 
@@ -86,7 +107,11 @@ Apply globally — but branch on Tailwind flavor:
 - **Do NOT create or modify `tailwind.config.js`** — v4 is CSS-first. If one exists, leave it alone.
 - **Do NOT install `tailwindcss-animate`** — `animate-in` / `fade-in` etc. are built-in in v4.
 
-**Per file, before saving, mentally diff:** "Did I touch anything besides `className`, wrappers, or styling files?" If yes — revert that change.
+**Per file, before saving, mentally diff:** "Did I touch anything besides the class attribute, wrappers, or styling files?" If yes — revert that change.
+
+Framework-specific reminders:
+- **Vue:** never edit `<script>` / `<script setup>` blocks. `:class` array/object bindings: edit string literals only, never variables.
+- **Svelte:** never edit `<script>` blocks. `class:foo={bool}` directives: leave the keys alone — they're tied to component state. Only the static `class=` portion is fair game.
 
 ### Step 6 — SCREENSHOT AFTER
 
@@ -128,6 +153,8 @@ If the user says "rollback" / "undo" / "revert ui-modernizer", run `node scripts
 | `next dev` won't start | Skip screenshots, continue, note in report |
 | Tailwind config is JS but uses ESM exports | Detect, adapt accordingly |
 | File uses `styled-components` or CSS Modules | Skip that file, list it in report as "out of MVP scope" |
+| Vue file uses `:class="computedVar"` (variable, not array/object) | Skip — modernizer doesn't trace variables. Note in report. |
+| Svelte file has `class:foo={...}` directives | Edit only the static `class=` portion; leave directives alone. Verify referenced classes still exist after edits. |
 | Git working tree is dirty | Warn the user once; proceed if they confirm |
 | `@babel/parser` not available | Fall back to regex-guarded className edits (only edit lines containing `className=`) |
 | `detect-stack` says v4 but globals.css has `@tailwind base;` | Project is mid-migration. STOP — ask the user whether to treat as v3 or v4. |
