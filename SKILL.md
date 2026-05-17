@@ -143,8 +143,23 @@ If the user says "rollback" / "undo" / "revert ui-modernizer", run `node scripts
 
 ## 3 · Sub-modes (advanced)
 
-- "modernize this UI like **Linear**" → load `references/style-references/linear.md` and prefer its tokens.
-- Same for `vercel`, `stripe`, `shadcn`. Default style is a blend.
+### Style profiles (v0.4 — pluggable)
+
+Style profiles are Markdown files describing a specific aesthetic. They override `design-system-2026.md` defaults. Two sources:
+
+| Source | Trigger phrase | What happens |
+|---|---|---|
+| Built-in | "modernize this UI like **Linear**" / `notion` / `vercel` / `stripe` / `shadcn` / `raycast` / `apple` | Load `references/style-references/<slug>.md` |
+| User-local | "modernize this UI using `./my-brand.md`" | Load the user-supplied path |
+| (none) | "modernize this UI" | Default blend — no specific profile |
+
+**Profile resolution workflow:**
+
+1. If the user did not specify a profile and asks "what styles are available?", run `node scripts/list-profiles.mjs --pretty` and show the table.
+2. Resolve the profile path (built-in slug → `references/style-references/<slug>.md`; otherwise treat as a filesystem path).
+3. **Always validate** before applying: `node scripts/validate-profile.mjs <path>`. If errors > 0, stop and surface them.
+4. Read the profile's `## Tokens`, `## Patterns`, `## Don'ts` sections. Treat `## Don'ts` as strict — never violate.
+5. See `references/profile-pluggability.md` for the full override hierarchy (brand color > profile > design-system default).
 
 ## 4 · Failure modes & recovery
 

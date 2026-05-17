@@ -59,11 +59,22 @@ Claude 接管剩下的所有事情。
 挑一个风格：
 
 ```
-modernize this UI like Linear
-modernize this UI like Vercel
-modernize this UI like Stripe
-modernize this UI like shadcn
+modernize this UI like Linear      # 紧凑、mono 气、柔紫色、暗色优先
+modernize this UI like Vercel      # 黑白单色、极简硬朗、仅 hero 用渐变
+modernize this UI like Stripe      # 信任 + 精致、层叠渐变、奢华字体
+modernize this UI like shadcn      # 语义化 CSS 变量、当今 Tailwind 默认选择
+modernize this UI like Notion      # 温暖、克制、充裕留白
+modernize this UI like Raycast     # 暗色、致密、命令行能量
+modernize this UI like Apple       # 高级感胶囊按钮、柔阴影、玻璃质感
 ```
+
+或者**用你自己的 profile** —— 指向任何符合规范的本地 Markdown 文件：
+
+```
+modernize this UI using ./design/our-brand.md
+```
+
+详见 [可插拔风格 profile](./references/profile-pluggability.md) 和 [profile 格式规范](./references/style-references/_PROFILE_FORMAT.md)。
 
 ---
 
@@ -148,7 +159,7 @@ cd ../after && npm install && npm run dev
 - [x] **v0.1** —— MVP：React + Next.js + Tailwind v3、10 条现代化规则、备份/回滚
 - [x] **v0.2** —— Tailwind v4 支持，自动检测品牌色
 - [x] **v0.3** —— Vue 3（Nuxt / Vite）+ Svelte 5（SvelteKit / Vite）支持
-- [ ] **v0.4** —— 可插拔的风格 profile（社区贡献品牌）
+- [x] **v0.4** —— 可插拔风格 profile（7 个内置 + 自带 Markdown）
 - [ ] **v0.5** —— 组件级替换（自动 install shadcn primitives）
 - [ ] **v1.0** —— 视觉回归测试（对照设计规范）
 
@@ -158,11 +169,14 @@ cd ../after && npm install && npm run dev
 
 ui-modernizer 本质上是 **prompt + Markdown 规则**。新增一种审美只需要一个 PR：
 
-1. 创建 `references/style-references/<your-style>.md`
-2. 写一段简短的 "什么场景用这个 style" 说明
-3. 可选：在 `examples/` 里加 before/after 代码示例
+1. 复制 [`references/style-references/notion.md`](./references/style-references/notion.md) 作为模板。
+2. 改 frontmatter（`name` 必须和文件名一致），填好 `## Tokens`、`## Patterns`、`## Don'ts`。
+3. 本地验证：`node scripts/validate-profile.mjs references/style-references/<你的>.md` —— exit 0 才行。
+4. 开 PR。CI 每次 push 都会跑验证。
 
-不需要构建、不需要测试、不需要 TypeScript 仪式感。开 PR 就完事。
+开干之前请先读一下 [profile 格式规范](./references/style-references/_PROFILE_FORMAT.md)，很短。
+
+不需要构建、不需要测试、不需要 TypeScript 仪式感。
 
 ---
 

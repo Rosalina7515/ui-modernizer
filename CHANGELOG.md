@@ -2,6 +2,32 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.4.0] — 2026-05-17
+
+### Added
+- **Pluggable style profiles.** Style references are now formal, validated, pluggable extensions:
+  - Profile **format spec** at `references/style-references/_PROFILE_FORMAT.md` (v1.0): required YAML frontmatter (`name`, `displayName`, `version`, `vibe`, `darkFirst`, `recommendedFonts`, `authors`) + required body sections (`## Tokens`, `## Patterns`, `## Don'ts`).
+  - **Bring-your-own profile**: users can now say *"modernize this UI using `./our-brand.md`"* and ui-modernizer will load any local Markdown file conforming to the spec.
+  - **Validation script** `scripts/validate-profile.mjs` — checks frontmatter and required sections. CI runs it on every PR via `--all`.
+  - **Listing script** `scripts/list-profiles.mjs` — outputs JSON or a pretty table of every available profile. Run when the user asks "what styles are available?".
+- **3 new built-in profiles** seeded the system:
+  - `notion` — warm, calm, generous whitespace.
+  - `raycast` — dark-first, dense, command-bar energy.
+  - `apple` — premium pill buttons, soft shadows, glass.
+- New reference: `references/profile-pluggability.md` — the full override hierarchy (brand color > profile > design-system default), profile resolution rules, contribution workflow.
+
+### Changed
+- All 4 existing built-in profiles (`linear`, `vercel`, `stripe`, `shadcn`) — added required frontmatter and re-shaped to include `## Tokens`, `## Patterns`, `## Don'ts` sections. `shadcn` profile expanded with explicit pattern snippets.
+- `SKILL.md` Section 3 — rewrote "Sub-modes" into a formal "Style profiles" sub-section: resolution table, validation step, override-hierarchy pointer.
+- README "Pick a vibe" code block — now lists all 7 built-in profiles with one-line descriptions plus the bring-your-own syntax.
+- README "Contributing" — updated to the 4-step profile-contribution flow with local validation command.
+- CI workflow — added `node scripts/validate-profile.mjs --all` step.
+
+### Not changed
+- Detection / brand-color / framework workflow — unchanged.
+
+---
+
 ## [0.3.0] — 2026-05-17
 
 ### Added

@@ -59,11 +59,22 @@ Claude takes it from there.
 Pick a vibe:
 
 ```
-modernize this UI like Linear
-modernize this UI like Vercel
-modernize this UI like Stripe
-modernize this UI like shadcn
+modernize this UI like Linear      # ultra-tight, mono-ish, soft purples (dark-first)
+modernize this UI like Vercel      # monochrome, brutalist, hero gradients
+modernize this UI like Stripe      # trust + precision, layered gradients, premium
+modernize this UI like shadcn      # semantic CSS vars, the de-facto modern default
+modernize this UI like Notion      # warm, calm, generous whitespace
+modernize this UI like Raycast     # dark, dense, command-bar energy
+modernize this UI like Apple       # premium pills, soft shadows, glass
 ```
+
+Or **bring your own profile** — point at any local Markdown file matching the spec:
+
+```
+modernize this UI using ./design/our-brand.md
+```
+
+See [Pluggable style profiles](./references/profile-pluggability.md) and [the profile format spec](./references/style-references/_PROFILE_FORMAT.md).
 
 ---
 
@@ -148,7 +159,7 @@ cd ../after && npm install && npm run dev
 - [x] **v0.1** — MVP: React + Next.js + Tailwind v3, 10 modernization rules, backup/rollback
 - [x] **v0.2** — Tailwind v4 support, custom brand color detection
 - [x] **v0.3** — Vue 3 (Nuxt / Vite) + Svelte 5 (SvelteKit / Vite) support
-- [ ] **v0.4** — Pluggable style profiles (community brands)
+- [x] **v0.4** — Pluggable style profiles (7 built-in + bring-your-own Markdown)
 - [ ] **v0.5** — Component substitution (auto-install shadcn primitives)
 - [ ] **v1.0** — Visual regression checks against design-system specs
 
@@ -158,11 +169,14 @@ cd ../after && npm install && npm run dev
 
 ui-modernizer is mostly **prompt + Markdown rules**. Adding a new aesthetic is one PR:
 
-1. Create `references/style-references/<your-style>.md`
-2. Add a small "When this style?" paragraph
-3. Optional: add example before/after code snippets in `examples/`
+1. Copy [`references/style-references/notion.md`](./references/style-references/notion.md) as a starting template.
+2. Edit the frontmatter (`name` must match your filename) and fill in `## Tokens`, `## Patterns`, `## Don'ts`.
+3. Validate locally: `node scripts/validate-profile.mjs references/style-references/<your>.md` — must exit 0.
+4. Open a PR. CI re-runs the validator on every push.
 
-No build, no tests, no TypeScript ceremony. Open a PR.
+Read the [profile format spec](./references/style-references/_PROFILE_FORMAT.md) before you start. It's short.
+
+No build, no tests, no TypeScript ceremony.
 
 ---
 

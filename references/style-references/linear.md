@@ -1,3 +1,22 @@
+---
+name: linear
+displayName: Linear
+version: 1.0
+vibe: ultra-tight density, mono-ish accents, soft purples, sharp typography
+darkFirst: true
+recommendedFonts:
+  - "Inter"
+  - "ui-sans-serif"
+authors:
+  - ui-modernizer
+references:
+  - https://linear.app
+tags:
+  - dense
+  - developer-tools
+  - keyboard-driven
+---
+
 # Linear style
 
 **Signature:** ultra-tight density, mono-ish accents, soft purples, sharp typography.

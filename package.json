@@ -1,6 +1,6 @@
 {
   "name": "ui-modernizer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "One-prompt UI modernization for React/Vue/Svelte + Tailwind. A Claude Code Skill that upgrades your UI to 2026 SaaS-grade design (Linear / Vercel / Stripe / shadcn).",
   "type": "module",
   "bin": {

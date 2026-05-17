@@ -1,3 +1,23 @@
+---
+name: vercel
+displayName: Vercel
+version: 1.0
+vibe: monochrome, brutalist simplicity, generous whitespace, hero gradients only
+darkFirst: true
+recommendedFonts:
+  - "Geist Sans"
+  - "Inter"
+  - "ui-sans-serif"
+authors:
+  - ui-modernizer
+references:
+  - https://vercel.com
+tags:
+  - monochrome
+  - developer-tools
+  - marketing
+---
+
 # Vercel style
 
 **Signature:** monochrome, Geist font, brutalist simplicity, generous whitespace, signature gradients in hero only.

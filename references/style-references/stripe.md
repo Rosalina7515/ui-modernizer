@@ -1,3 +1,23 @@
+---
+name: stripe
+displayName: Stripe
+version: 1.0
+vibe: trust and precision, soft purple, layered gradients, premium typography
+darkFirst: false
+recommendedFonts:
+  - "Sohne"
+  - "Inter"
+  - "system-ui"
+authors:
+  - ui-modernizer
+references:
+  - https://stripe.com
+tags:
+  - premium
+  - fintech
+  - marketing
+---
+
 # Stripe style
 
 **Signature:** trust + precision. Soft purple/indigo, layered gradients, premium typography, lots of breathing room.
