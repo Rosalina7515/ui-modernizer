@@ -27,12 +27,19 @@ Execute these steps sequentially. Announce each step in one short sentence befor
 
 ### Step 1 — DETECT
 
-Run `node scripts/detect-stack.mjs` (relative to this skill's directory). Confirm:
+Run **two** detection scripts in this order:
+
+1. `node scripts/detect-stack.mjs` — confirms React + Next.js + Tailwind. Output includes `tailwind.flavor` (`'v3' | 'v4' | 'unknown'`). Branch the rest of the workflow on this.
+2. `node scripts/detect-brand.mjs` — looks for an existing brand / primary / accent color so we use *that* instead of forcing indigo. Output includes `classPrefix` (`'brand' | 'primary' | 'accent' | 'indigo'`). **Remember this value** — every later step substitutes it into class strings.
+
+Required stack:
 - React present
 - Next.js present (App Router preferred; Pages Router supported)
-- Tailwind CSS v3+ configured
+- Tailwind CSS v3 **or v4** configured
 
-If any check fails: STOP and tell the user which prerequisite is missing. Do not proceed.
+If any required check fails: STOP and tell the user which prerequisite is missing. Do not proceed.
+
+Once detection succeeds, announce: "Detected React + Next.js + Tailwind **{flavor}**, accent: **{classPrefix}**."
 
 ### Step 2 — PLAN
 
@@ -64,11 +71,20 @@ For each planned file, edit ONLY `className` strings and styling files, applying
 - `references/component-patterns.md` — Button / Card / Input / Modal / Nav templates
 - `references/animation-motion.md` — transitions and entrance animations
 - `references/dark-mode.md` — dark variant strategy
+- `references/brand-color-strategy.md` — **always** substitute `indigo` placeholders with the `classPrefix` returned by Step 1. Read this *before* writing any `bg-indigo-*` / `text-indigo-*` / `ring-indigo-*` class.
+- If `tailwind.flavor === 'v4'`: **also** read `references/tailwind-v4.md` — class names, theme block, and CSS-first config differ from v3.
 
-Also apply globally:
+Apply globally — but branch on Tailwind flavor:
+
+**For Tailwind v3 projects:**
 - Replace `app/globals.css` body styles with `templates/globals.css.tpl` (preserving any user-specific imports).
 - Ensure `tailwind.config.{js,ts}` extends `templates/tailwind.config.tpl` — merge, don't overwrite.
 - Add `templates/design-tokens.css.tpl` content to globals (CSS variables for light/dark).
+
+**For Tailwind v4 projects:**
+- Replace `app/globals.css` with `templates/globals.v4.css.tpl` (preserving any user-specific imports and any existing `@theme` brand-color tokens — *merge*, don't overwrite the theme block).
+- **Do NOT create or modify `tailwind.config.js`** — v4 is CSS-first. If one exists, leave it alone.
+- **Do NOT install `tailwindcss-animate`** — `animate-in` / `fade-in` etc. are built-in in v4.
 
 **Per file, before saving, mentally diff:** "Did I touch anything besides `className`, wrappers, or styling files?" If yes — revert that change.
 
@@ -114,3 +130,5 @@ If the user says "rollback" / "undo" / "revert ui-modernizer", run `node scripts
 | File uses `styled-components` or CSS Modules | Skip that file, list it in report as "out of MVP scope" |
 | Git working tree is dirty | Warn the user once; proceed if they confirm |
 | `@babel/parser` not available | Fall back to regex-guarded className edits (only edit lines containing `className=`) |
+| `detect-stack` says v4 but globals.css has `@tailwind base;` | Project is mid-migration. STOP — ask the user whether to treat as v3 or v4. |
+| `detect-brand` returns `single-value` shape | Only use `bg-<prefix>-600`; for hover use `bg-<prefix>-600/90` (opacity), not `-700` which may not exist. |

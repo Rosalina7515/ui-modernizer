@@ -3,6 +3,10 @@
 Apply these substitutions when editing `className` strings. Mappings are ordered: when several apply, prefer the more specific match.
 
 > **Mechanical rule:** the LEFT column is what you're likely to see in dated codebases. The RIGHT column is the 2026 replacement. If multiple options are listed, pick the first one unless context suggests otherwise.
+>
+> **Brand color note (v0.2):** Every occurrence of `indigo` below is a *placeholder*. Substitute the `classPrefix` returned by `scripts/detect-brand.mjs` (one of `brand` / `primary` / `accent` / `indigo` fallback) before writing the class. See `references/brand-color-strategy.md` for the substitution rules and edge cases.
+>
+> **Tailwind v4 note (v0.2):** If `scripts/detect-stack.mjs` reports `tailwind.flavor === 'v4'`, also read `references/tailwind-v4.md` — a handful of class names changed (`flex-shrink-0` → `shrink-0`, etc.) and the globals.css template is different.
 
 ## Colors — grays
 

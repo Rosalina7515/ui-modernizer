@@ -29,11 +29,26 @@ const allDeps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
 const has = (name) => Object.prototype.hasOwnProperty.call(allDeps, name);
 const v = (name) => allDeps[name] ?? null;
 
+// Tailwind major version: parse "^4.0.0" / "~3.4.10" / ">=4" / "4.0.0-beta.5" etc.
+function tailwindMajor(versionRange) {
+  if (!versionRange) return null;
+  const m = String(versionRange).match(/(\d+)/);
+  return m ? Number(m[1]) : null;
+}
+const twMajor = tailwindMajor(v('tailwindcss'));
+
 const stack = {
   cwd,
   react: { present: has('react'), version: v('react') },
   next: { present: has('next'), version: v('next') },
-  tailwind: { present: has('tailwindcss'), version: v('tailwindcss') },
+  tailwind: {
+    present: has('tailwindcss'),
+    version: v('tailwindcss'),
+    major: twMajor,                              // 3 | 4 | null
+    flavor: twMajor === 4 ? 'v4' : (twMajor === 3 ? 'v3' : 'unknown'),
+    postcssPlugin: has('@tailwindcss/postcss'),  // v4 prefers this
+    vitePlugin: has('@tailwindcss/vite'),        // v4 alternative
+  },
   tailwindAnimate: has('tailwindcss-animate'),
   tailwindForms: has('@tailwindcss/forms'),
   typescript: has('typescript'),
@@ -97,6 +112,22 @@ function walk(dir, depth = 0) {
 for (const root of UI_ROOTS) {
   const full = path.join(cwd, root);
   if (existsSync(full) && statSync(full).isDirectory()) walk(full);
+}
+
+// Sniff Tailwind v4-style CSS (overrides detection if @import "tailwindcss" is found).
+// v4 commonly uses `@import "tailwindcss";` instead of `@tailwind base;`.
+if (stack.configFiles.globalsCSS) {
+  try {
+    const css = readFileSync(path.join(cwd, stack.configFiles.globalsCSS), 'utf8');
+    if (/@import\s+["']tailwindcss["']/i.test(css)) {
+      stack.tailwind.flavor = 'v4';
+      if (!stack.tailwind.major) stack.tailwind.major = 4;
+    } else if (/@tailwind\s+base/i.test(css)) {
+      // Confirms v3-style directives — leave as-is unless version disagrees.
+      if (!stack.tailwind.flavor || stack.tailwind.flavor === 'unknown') stack.tailwind.flavor = 'v3';
+    }
+    stack.tailwind.usesThemeBlock = /@theme\b/i.test(css);
+  } catch {}
 }
 
 // Verdict
