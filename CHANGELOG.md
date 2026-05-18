@@ -2,6 +2,48 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.7.0] — 2026-05-18
+
+### Added
+- **AST-based class-string extraction.** New `scripts/ast-extract.mjs` lists every Tailwind class string in a JSX / TSX / Vue / Svelte file with line+column, kind, and an `editable` flag — so the modernizer can edit only strings that are guaranteed static class containers.
+  - **JSX / TSX** uses `@babel/parser` + `@babel/traverse` (already in `optionalDependencies`). Handles: `className="..."`, `className={"..."}`, template-literal quasis, `cn()` / `clsx()` / `classNames()` / `twMerge()` / `twJoin()` / `cva()` arguments, conditional expressions, object property keys.
+  - **Vue** uses a tightened template-only scanner (script/style blocks masked). `class="..."` and string literals inside `:class="[...]"` / `:class="{...}"` are extracted. Full `vue-eslint-parser` integration is a v0.8 stretch goal.
+  - **Svelte** uses a markup-only scanner (script/style blocks masked). `class="..."` is editable; `class:foo={bool}` directives are flagged `editable: false`.
+  - Graceful degradation: if `@babel/parser` isn't installed, the script exits with `{ ok: false, reason: 'parser-missing' }` and the modernizer falls back to v0.6-style regex.
+- New CLI mode for testing: `node scripts/ast-extract.mjs <file> --pretty`.
+- New reference: `references/ast-safety.md` — the contract, what gets extracted per framework, recognized class-merger functions, known limitations.
+
+### Changed
+- `SKILL.md` Step 5 (APPLY) — recommends running `ast-extract` first to identify safe strings, then editing only `editable: true` entries. Added 2 new failure-mode rows (parser missing, editable: false).
+- README hero — added a `<img src="./assets/before-after.png">` reference at the top of both English and Chinese READMEs (drop your screenshot in `assets/`).
+
+### Not changed
+- v0.6 visual regression flow — independent, still runs.
+- Backup / rollback / report — unchanged.
+- The Skill's hard rule "never touch business logic" remains — v0.7 just makes it mechanically verifiable for JSX/TSX.
+
+### 中文翻译
+
+**新增**
+- **基于 AST 的 class 字符串提取**。新增 `scripts/ast-extract.mjs`,列出 JSX / TSX / Vue / Svelte 文件里每一个 Tailwind class 字符串,带行号、列号、kind 和 `editable` 标志 —— 现代化时只编辑那些"已被 AST 确认为静态 class 容器"的字符串。
+  - **JSX / TSX** 使用 `@babel/parser` + `@babel/traverse`(已在 `optionalDependencies` 里)。覆盖:`className="..."`、`className={"..."}`、模板字符串 quasi、`cn()` / `clsx()` / `classNames()` / `twMerge()` / `twJoin()` / `cva()` 的参数、条件表达式、对象属性 key。
+  - **Vue** 用收紧后的"仅 template 块"扫描器(script / style 块被屏蔽)。`class="..."` 和 `:class="[...]"` / `:class="{...}"` 里的字符串字面量都被提取。完整 `vue-eslint-parser` 接入是 v0.8 的延伸目标。
+  - **Svelte** 用"仅 markup"扫描器(script / style 块被屏蔽)。`class="..."` 可编辑;`class:foo={bool}` 指令被标为 `editable: false`。
+  - 优雅降级:`@babel/parser` 没装时脚本以 `{ ok: false, reason: 'parser-missing' }` 退出,现代化流程回退到 v0.6 风格的正则提取。
+- 新增 CLI 测试模式:`node scripts/ast-extract.mjs <file> --pretty`。
+- 新增参考文档:`references/ast-safety.md` —— 契约、每种框架抓什么、已识别的 class 合并函数、已知局限。
+
+**改动**
+- `SKILL.md` Step 5(APPLY)—— 推荐先跑 `ast-extract` 识别安全字符串,然后只编辑 `editable: true` 的条目。新增 2 条失败模式说明(parser 缺失、`editable: false`)。
+- README hero —— 在中英 README 顶部加入 `<img src="./assets/before-after.png">` 引用(把你的截图放进 `assets/` 即可显示)。
+
+**未改动**
+- v0.6 视觉回归流程 —— 独立,继续运行。
+- 备份 / 回滚 / 报告 —— 不变。
+- Skill 的硬性规则"不动业务逻辑" —— 不变。v0.7 只是让这条规则在 JSX/TSX 上变得**可机械验证**。
+
+---
+
 ## [0.6.0] — 2026-05-17
 
 ### Added

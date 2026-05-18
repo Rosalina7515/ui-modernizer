@@ -15,6 +15,11 @@ Linear · Vercel · Stripe · shadcn — pick a vibe, get the look.
 
 <br />
 
+<img src="./assets/before-after.png" alt="ui-modernizer · before / after demo" width="100%" />
+
+<br />
+<br />
+
 [![npm](https://img.shields.io/npm/v/ui-modernizer.svg?style=flat&color=000)](https://www.npmjs.com/package/ui-modernizer)
 [![license](https://img.shields.io/badge/license-MIT-000.svg?style=flat)](./LICENSE)
 [![claude code](https://img.shields.io/badge/Claude%20Code-Skill-D97757?style=flat)](https://claude.com/claude-code)
@@ -175,7 +180,7 @@ cd ../after && npm install && npm run dev
 
 **Path to v1.0:**
 - [x] **v0.6** — Visual regression checks (diff DOM + computed styles before/after)
-- [ ] **v0.7** — AST safety net (replace regex with `@babel/parser` / `vue-eslint-parser` / `svelte/compiler`)
+- [x] **v0.7** — AST safety net (`@babel/parser` for JSX/TSX; tightened scanners for Vue/Svelte)
 - [ ] **v0.8** — `.ui-modernizer.json` config + `--dry-run` mode
 - [ ] **v0.9** — Polish: error codes, unified JSON output, Vitest coverage
 - [ ] **v1.0** — Stable API, docs site at ui-modernizer.dev, big-bang launch

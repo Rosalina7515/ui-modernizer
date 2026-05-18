@@ -86,7 +86,9 @@ If Playwright is not installed, the script prints the install command — relay 
 
 ### Step 5 — APPLY MODERNIZATION
 
-For each planned file, edit ONLY the class attribute (`className` for React, `class` for Vue/Svelte) and styling files, applying rules from:
+For each planned file, edit ONLY the class attribute (`className` for React, `class` for Vue/Svelte) and styling files. **AST safety net (v0.7+):** before editing each file, optionally run `node scripts/ast-extract.mjs <file>` to get every class string with `editable: true | false` flags. Only edit strings flagged `editable: true`. If `@babel/parser` is missing the script exits gracefully and you fall back to regex-guarded edits.
+
+Apply rules from:
 - `references/design-system-2026.md` — palette, scale, radius, shadow tokens
 - `references/tailwind-modernization.md` — exhaustive old→new class mapping
 - `references/component-patterns.md` — Button / Card / Input / Modal / Nav templates
@@ -210,7 +212,8 @@ Style profiles are Markdown files describing a specific aesthetic. They override
 | Vue file uses `:class="computedVar"` (variable, not array/object) | Skip — modernizer doesn't trace variables. Note in report. |
 | Svelte file has `class:foo={...}` directives | Edit only the static `class=` portion; leave directives alone. Verify referenced classes still exist after edits. |
 | Git working tree is dirty | Warn the user once; proceed if they confirm |
-| `@babel/parser` not available | Fall back to regex-guarded className edits (only edit lines containing `className=`) |
+| `@babel/parser` not available | `ast-extract.mjs` exits with `parser-missing` — fall back to regex-guarded className edits (only edit lines containing `className=`). The Skill workflow continues; only the AST safety guarantee is lost. |
+| `ast-extract.mjs` returns `editable: false` for a string | Skip that string — it's conditional / dynamic / a directive key. Note it in the report if the user expected it to be modernized. |
 | `detect-stack` says v4 but globals.css has `@tailwind base;` | Project is mid-migration. STOP — ask the user whether to treat as v3 or v4. |
 | `detect-brand` returns `single-value` shape | Only use `bg-<prefix>-600`; for hover use `bg-<prefix>-600/90` (opacity), not `-700` which may not exist. |
 | `npx shadcn add` fails mid-substitution | STOP. Restore from backup. Continue with Step 6+7 — className changes still hold. Note in report. |

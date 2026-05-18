@@ -15,6 +15,11 @@ Linear · Vercel · Stripe · shadcn —— 挑一个风格，直接拥有同款
 
 <br />
 
+<img src="./assets/before-after.png" alt="ui-modernizer · before / after 演示" width="100%" />
+
+<br />
+<br />
+
 [![npm](https://img.shields.io/npm/v/ui-modernizer.svg?style=flat&color=000)](https://www.npmjs.com/package/ui-modernizer)
 [![license](https://img.shields.io/badge/license-MIT-000.svg?style=flat)](./LICENSE)
 [![claude code](https://img.shields.io/badge/Claude%20Code-Skill-D97757?style=flat)](https://claude.com/claude-code)
@@ -175,7 +180,7 @@ cd ../after && npm install && npm run dev
 
 **通往 v1.0：**
 - [x] **v0.6** —— 视觉回归测试（改前/改后 DOM + 计算样式 diff）
-- [ ] **v0.7** —— AST 安全网（用 `@babel/parser` / `vue-eslint-parser` / `svelte/compiler` 替换正则）
+- [x] **v0.7** —— AST 安全网（JSX/TSX 用 `@babel/parser`；Vue/Svelte 用收紧后的扫描器）
 - [ ] **v0.8** —— `.ui-modernizer.json` 配置文件 + `--dry-run` 模式
 - [ ] **v0.9** —— 打磨：错误码、统一 JSON 输出格式、Vitest 覆盖
 - [ ] **v1.0** —— API 稳定、文档站 ui-modernizer.dev、大爆炸级发布
