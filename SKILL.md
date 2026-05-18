@@ -25,6 +25,12 @@ Your job: take the current project's UI from "ok-looking" to **Linear / Vercel /
 
 Execute these steps sequentially. Announce each step in one short sentence before running it.
 
+### Step 0 — LOAD CONFIG (v0.8+)
+
+Run `node scripts/load-config.mjs --pretty`. If `.ui-modernizer.json` exists at the project root, it's loaded and merged with defaults. The config's `profile`, `ignore`, `maxFiles`, `strict`, `screenshot.routes`, and `substitution.components` should shape later steps. Surface the resolved config to the user in one line ("Config: profile=linear, maxFiles=40, strict=false").
+
+If the user wants to know what would change before running anything, suggest `node scripts/dry-run.mjs --pretty` — a read-only preview that lists candidate stale patterns by file and by rule, without modifying anything.
+
 ### Step 1 — DETECT
 
 Run **two** detection scripts in this order:
@@ -54,6 +60,8 @@ Based on `runtime`, load the appropriate framework reference for Step 5:
 - `svelte` → `references/frameworks/svelte.md`
 
 ### Step 2 — PLAN
+
+If the config sets a `profile`, load it via the v0.4 profile workflow before planning. If the config sets `brand`, use it instead of running `detect-brand.mjs`. Apply `ignore[]` globs and respect `maxFiles` as a hard cap. If `strict: true` and any UI file would be skipped, **stop and tell the user** before planning.
 
 Walk the project's UI files. The roots and extensions depend on `runtime`:
 - **React:** `app/**`, `components/**`, `src/**` with extensions `.tsx`, `.jsx`

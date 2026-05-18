@@ -171,34 +171,31 @@ cd ../after && npm install && npm run dev
 
 ## 🗺️ Roadmap
 
-**Shipped:**
+### Released
+
 - [x] **v0.1** — MVP: React + Next.js + Tailwind v3, 10 modernization rules, backup/rollback
-- [x] **v0.2** — Tailwind v4 support, custom brand color detection
+- [x] **v0.2** — Tailwind v4 support + custom brand color detection
 - [x] **v0.3** — Vue 3 (Nuxt / Vite) + Svelte 5 (SvelteKit / Vite) support
 - [x] **v0.4** — Pluggable style profiles (7 built-in + bring-your-own Markdown)
 - [x] **v0.5** — Component substitution (auto-install shadcn primitives)
-
-**Path to v1.0:**
 - [x] **v0.6** — Visual regression checks (diff DOM + computed styles before/after)
 - [x] **v0.7** — AST safety net (`@babel/parser` for JSX/TSX; tightened scanners for Vue/Svelte)
-- [ ] **v0.8** — `.ui-modernizer.json` config + `--dry-run` mode
+- [x] **v0.8** — `.ui-modernizer.json` config + `--dry-run` mode
+
+### Upcoming
+
 - [ ] **v0.9** — Polish: error codes, unified JSON output, Vitest coverage
 - [ ] **v1.0** — Stable API, docs site at ui-modernizer.dev, big-bang launch
-
-**After v1.0 — the v1.x series** (each minor opens a new audience; order may shift by demand):
-
-| Version | Theme |
-|---|---|
-| v1.1 | Tests & stability hardening (90%+ coverage) |
-| v1.2 | Docs site polish (interactive playground, profile gallery) |
-| v1.3 | **AI reverse generation** — "create a settings page like Linear" |
-| v1.4 | A11y audit + auto-fix |
-| v1.5 | Performance audit (images, fonts, hydration) |
-| v1.6 | VS Code + JetBrains plugins |
-| v1.7 | Figma → code |
-| v1.8 | More design systems (Material 3, Fluent, Carbon, Ant) |
-| v1.9 | React Native + Expo (via NativeWind) |
-| v2.0 | Full plugin system (ESLint-style ecosystem) |
+- [ ] **v1.1** — Tests & stability hardening (90%+ coverage)
+- [ ] **v1.2** — Docs site polish (interactive playground, profile gallery)
+- [ ] **v1.3** — AI reverse generation — "create a settings page like Linear"
+- [ ] **v1.4** — A11y audit + auto-fix
+- [ ] **v1.5** — Performance audit (images, fonts, hydration)
+- [ ] **v1.6** — VS Code + JetBrains plugins
+- [ ] **v1.7** — Figma → code
+- [ ] **v1.8** — More design systems (Material 3, Fluent, Carbon, Ant)
+- [ ] **v1.9** — React Native + Expo (via NativeWind)
+- [ ] **v2.0** — Full plugin system (ESLint-style ecosystem)
 
 Full reasoning, strategic notes, and explicit non-goals → **[ROADMAP.md](./ROADMAP.md)**.
 

@@ -2,6 +2,44 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.8.0] — 2026-05-18
+
+### Added
+- **`.ui-modernizer.json` project config.** Drop this file at your project root to encode team-level defaults: which profile, which files to ignore, hard cap on files, strict mode, screenshot routes, substitution component allowlist, AST-required gate.
+- New script: `scripts/load-config.mjs` — loads the config, merges with defaults, validates, and reports warnings/errors. CLI: `node scripts/load-config.mjs --pretty`. Programmatic: `import { loadConfig } from './scripts/load-config.mjs'`.
+- New script: `scripts/dry-run.mjs` — read-only modernization preview. Walks all UI files (honoring `ignore` and `maxFiles`), counts stale class patterns by rule and by file, exits 0 normally or 1 in `--ci` / `strict` mode if any candidates exist. Drop-in for `pre-commit` and CI lint jobs.
+- New reference: `references/config-file.md` — full schema, field-by-field reference, common recipes.
+- New example file: `.ui-modernizer.example.json` — copy to `.ui-modernizer.json` and customize.
+
+### Changed
+- `SKILL.md` — added Step 0 (LOAD CONFIG) before detection. Step 2 (PLAN) now respects `profile`, `brand` override, `ignore`, `maxFiles`, and `strict` from the config.
+- `scripts/ast-extract.mjs` — refactored to export `extractFile()`, `extractJSX()`, `extractVue()`, `extractSvelte()` while keeping the CLI entry intact (gated by `if (isMain)`). `dry-run.mjs` consumes the exports.
+
+### Not changed
+- v0.7 AST extraction behavior — unchanged. Same output shape.
+- Visual regression, substitution, profiles — independent, still work.
+- Backup / rollback / report — unchanged.
+
+### 中文翻译
+
+**新增**
+- **`.ui-modernizer.json` 项目级配置**。在项目根目录放这个文件,把团队级默认行为固化下来:用哪个 profile、忽略哪些文件、单次最大文件数、严格模式、截图路由、可替换组件白名单、AST 是否强制。
+- 新增脚本:`scripts/load-config.mjs` —— 读取配置、合并默认值、校验、输出 warnings / errors。CLI:`node scripts/load-config.mjs --pretty`。也可作为模块 import。
+- 新增脚本:`scripts/dry-run.mjs` —— 只读的现代化预览。扫描所有 UI 文件(尊重 `ignore` 和 `maxFiles`),按规则和按文件统计陈旧 class 模式,正常退出 0,在 `--ci` 或 `strict: true` 模式下发现候选时退出 1。可直接挂在 `pre-commit` 或 CI lint job 上。
+- 新增参考文档:`references/config-file.md` —— 完整 schema、逐字段说明、常用 recipe。
+- 新增示例文件:`.ui-modernizer.example.json` —— 复制为 `.ui-modernizer.json` 后自定义。
+
+**改动**
+- `SKILL.md` —— 在检测前新增 Step 0(LOAD CONFIG)。Step 2(PLAN)现在尊重配置里的 `profile`、`brand` 覆盖、`ignore`、`maxFiles`、`strict`。
+- `scripts/ast-extract.mjs` —— 重构以 export `extractFile()` / `extractJSX()` / `extractVue()` / `extractSvelte()`,同时保留 CLI 入口(用 `if (isMain)` 守护)。`dry-run.mjs` 使用这些 export。
+
+**未改动**
+- v0.7 AST 提取行为 —— 不变。输出格式相同。
+- 视觉回归、替换、profile —— 独立,继续工作。
+- 备份 / 回滚 / 报告 —— 不变。
+
+---
+
 ## [0.7.0] — 2026-05-18
 
 ### Added

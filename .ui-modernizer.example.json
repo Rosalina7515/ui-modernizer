@@ -1,0 +1,23 @@
+{
+  "$schema": "Optional convention — no JSON schema published yet",
+  "_comment": "Copy this file to .ui-modernizer.json at your project root, then customize.",
+  "profile": "linear",
+  "ignore": [
+    "src/legacy/**",
+    "**/*.test.tsx",
+    "**/*.stories.tsx"
+  ],
+  "maxFiles": 30,
+  "strict": false,
+  "screenshot": {
+    "routes": ["/", "/dashboard"],
+    "skip": false
+  },
+  "substitution": {
+    "components": ["button", "input", "textarea", "label", "badge", "separator", "avatar"],
+    "skipIfNoComponentsJson": true
+  },
+  "ast": {
+    "required": false
+  }
+}

@@ -38,17 +38,11 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
-
-const args = process.argv.slice(2);
-const pretty = args.includes('--pretty');
-const targets = args.filter((a) => !a.startsWith('--'));
-
-if (targets.length === 0) {
-  console.error('Usage: ast-extract.mjs <file> [<file>...] [--pretty]');
-  process.exit(2);
-}
+import { fileURLToPath } from 'node:url';
 
 const cwd = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const isMain = process.argv[1] === __filename || process.argv[1]?.endsWith('/ast-extract.mjs');
 
 // ──────────────────────────────────────────────────────────────────────────────
 // JSX / TSX
@@ -276,7 +270,7 @@ async function extractSvelte(filePath, code) {
 
 // ──────────────────────────────────────────────────────────────────────────────
 
-async function extractFile(rel) {
+export async function extractFile(rel) {
   const full = path.isAbsolute(rel) ? rel : path.join(cwd, rel);
   if (!existsSync(full)) return { file: rel, ok: false, reason: 'file-not-found', strings: [] };
   const code = readFileSync(full, 'utf8');
@@ -289,34 +283,49 @@ async function extractFile(rel) {
   return { file: rel, ext, ...result };
 }
 
-const results = [];
-for (const t of targets) {
-  results.push(await extractFile(t));
-}
+export { extractJSX, extractVue, extractSvelte };
 
-if (pretty) {
-  for (const r of results) {
-    console.log(`\n${r.file}  [${r.ext}]  ${r.ok ? `via ${r.parser}` : `FAILED: ${r.reason}`}`);
-    if (!r.ok && r.installHint) console.log(`  install hint: ${r.installHint}`);
-    if (r.error) console.log(`  error: ${r.error}`);
-    if (r.strings?.length) {
-      console.log(`  ${r.strings.length} class string(s):`);
-      for (const s of r.strings) {
-        const ed = s.editable ? '✓' : '✗';
-        const preview = (s.value ?? '').slice(0, 80).replace(/\n/g, '⏎');
-        console.log(`    L${String(s.line).padStart(3)}:${String(s.col).padStart(3)}  ${ed}  ${s.kind.padEnd(18)}  "${preview}"`);
+// ──────────────────────────────────────────────────────────────────────────────
+// CLI entry point (only when run directly, not when imported)
+if (isMain) {
+  const args = process.argv.slice(2);
+  const pretty = args.includes('--pretty');
+  const targets = args.filter((a) => !a.startsWith('--'));
+
+  if (targets.length === 0) {
+    console.error('Usage: ast-extract.mjs <file> [<file>...] [--pretty]');
+    process.exit(2);
+  }
+
+  const results = [];
+  for (const t of targets) {
+    results.push(await extractFile(t));
+  }
+
+  if (pretty) {
+    for (const r of results) {
+      console.log(`\n${r.file}  [${r.ext}]  ${r.ok ? `via ${r.parser}` : `FAILED: ${r.reason}`}`);
+      if (!r.ok && r.installHint) console.log(`  install hint: ${r.installHint}`);
+      if (r.error) console.log(`  error: ${r.error}`);
+      if (r.strings?.length) {
+        console.log(`  ${r.strings.length} class string(s):`);
+        for (const s of r.strings) {
+          const ed = s.editable ? '✓' : '✗';
+          const preview = (s.value ?? '').slice(0, 80).replace(/\n/g, '⏎');
+          console.log(`    L${String(s.line).padStart(3)}:${String(s.col).padStart(3)}  ${ed}  ${s.kind.padEnd(18)}  "${preview}"`);
+        }
       }
     }
+    const total = results.reduce((s, r) => s + (r.strings?.length ?? 0), 0);
+    console.log(`\n${total} string(s) across ${results.length} file(s).`);
+  } else {
+    console.log(JSON.stringify({
+      ok: results.every((r) => r.ok),
+      totalFiles: results.length,
+      totalStrings: results.reduce((s, r) => s + (r.strings?.length ?? 0), 0),
+      results,
+    }, null, 2));
   }
-  const total = results.reduce((s, r) => s + (r.strings?.length ?? 0), 0);
-  console.log(`\n${total} string(s) across ${results.length} file(s).`);
-} else {
-  console.log(JSON.stringify({
-    ok: results.every((r) => r.ok),
-    totalFiles: results.length,
-    totalStrings: results.reduce((s, r) => s + (r.strings?.length ?? 0), 0),
-    results,
-  }, null, 2));
-}
 
-process.exit(results.every((r) => r.ok || r.reason === 'parser-missing') ? 0 : 1);
+  process.exit(results.every((r) => r.ok || r.reason === 'parser-missing') ? 0 : 1);
+}
