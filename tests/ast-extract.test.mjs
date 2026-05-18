@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -74,6 +74,4 @@ const opaqueClasses = 'should-not-be-extracted';
   });
 });
 
-// Clean up after all tests complete
-import { afterAll } from 'vitest';
 afterAll(() => rmSync(tmp, { recursive: true, force: true }));

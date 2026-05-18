@@ -218,7 +218,9 @@ async function extractVue(filePath, code) {
   }
 
   const out = [];
-  const attrRe = /\b(class|:class|v-bind:class)\s*=\s*"([^"]*)"/g;
+  // Lookbehind for start-of-line or whitespace (not `\b`, which fails on `:class`
+  // since `:` is a non-word char so there's no word boundary before it).
+  const attrRe = /(?<=^|\s)(class|:class|v-bind:class)\s*=\s*"([^"]*)"/g;
   for (const { lineNo, text } of tplLines) {
     let m;
     while ((m = attrRe.exec(text)) !== null) {
