@@ -8,7 +8,7 @@
 
 > This is a living document. Plans may shift based on community feedback. Open an [issue](https://github.com/Rosalina7515/ui-modernizer/issues) or [discussion](https://github.com/Rosalina7515/ui-modernizer/discussions) if you want to weigh in.
 
-**Today: v0.5 shipped.** Multi-framework (React/Vue/Svelte), Tailwind v3+v4, brand-color detection, 7 pluggable style profiles, opt-in shadcn component substitution.
+**Today: v1.0 shipped.** Stable API contract (SemVer commitment), governance docs, health-check, 41-test suite, unified JSON envelope across all scripts, UMD-NNN error codes. Multi-framework (React/Vue/Svelte), Tailwind v3+v4, brand-color detection, 7 pluggable style profiles, opt-in shadcn substitution, visual regression checks, AST safety net, `.ui-modernizer.json` config, dry-run mode.
 
 The path to v1.0 is deliberately broken into focused minor versions — each one a small, testable, shippable improvement. v1.0 itself is the "production-ready promise", not another feature drop.
 

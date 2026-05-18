@@ -23,6 +23,7 @@ Linear · Vercel · Stripe · shadcn —— 挑一个风格，直接拥有同款
 [![npm](https://img.shields.io/npm/v/ui-modernizer.svg?style=flat&color=000)](https://www.npmjs.com/package/ui-modernizer)
 [![license](https://img.shields.io/badge/license-MIT-000.svg?style=flat)](./LICENSE)
 [![claude code](https://img.shields.io/badge/Claude%20Code-Skill-D97757?style=flat)](https://claude.com/claude-code)
+[![stable](https://img.shields.io/badge/stable-1.0-22c55e?style=flat)](./references/api-stability.md)
 [![stars](https://img.shields.io/github/stars/Rosalina7515/ui-modernizer?style=flat&color=000)](https://github.com/Rosalina7515/ui-modernizer/stargazers)
 
 </div>
@@ -182,10 +183,10 @@ cd ../after && npm install && npm run dev
 - [x] **v0.7** —— AST 安全网（JSX/TSX 用 `@babel/parser`；Vue/Svelte 用收紧后的扫描器）
 - [x] **v0.8** —— `.ui-modernizer.json` 配置文件 + `--dry-run` 模式
 - [x] **v0.9** —— 打磨：`UMD-NNN` 错误码、统一 JSON 输出格式、Vitest 测试、"Did you mean?" 提示
+- [x] **v1.0** —— 稳定的 API 契约（[SemVer 承诺](./references/api-stability.md)）、治理文档、健康检查、41 个测试
 
 ### 未发布
 
-- [ ] **v1.0** —— API 稳定、文档站 ui-modernizer.dev、大爆炸级发布
 - [ ] **v1.1** —— 测试 & 稳定性强化（覆盖率 90%+）
 - [ ] **v1.2** —— 文档站精进（互动 playground、profile 画廊）
 - [ ] **v1.3** —— AI 反向生成 —— "create a settings page like Linear"

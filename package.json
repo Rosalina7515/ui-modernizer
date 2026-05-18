@@ -1,6 +1,6 @@
 {
   "name": "ui-modernizer",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "One-prompt UI modernization for React/Vue/Svelte + Tailwind. A Claude Code Skill that upgrades your UI to 2026 SaaS-grade design (Linear / Vercel / Stripe / shadcn).",
   "type": "module",
   "bin": {
@@ -51,13 +51,13 @@
   },
   "homepage": "https://github.com/Rosalina7515/ui-modernizer#readme",
   "optionalDependencies": {
-    "playwright": "^1.48.0",
+    "@babel/generator": "^7.25.0",
     "@babel/parser": "^7.25.0",
     "@babel/traverse": "^7.25.0",
-    "@babel/generator": "^7.25.0",
+    "playwright": "^1.48.0",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.9"
   }
 }

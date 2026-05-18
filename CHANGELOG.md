@@ -2,6 +2,86 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [1.0.0] — 2026-05-19
+
+**The production-ready release.** Starting with 1.0, ui-modernizer follows [Semantic Versioning](./references/api-stability.md). No breaking changes until 2.0.
+
+### Added
+- **API stability commitment** — [`references/api-stability.md`](./references/api-stability.md) defines what is public API (workflow steps, trigger phrase, config schema, CLI flags, JSON envelope shape, error codes, profile format) vs. internal (helper module internals, `payload` field-level shape, prompt wording).
+- **Governance docs**:
+  - `CONTRIBUTING.md` — how to add a profile, code style, PR checklist.
+  - `CODE_OF_CONDUCT.md` — Contributor Covenant 2.1 reference.
+  - `SECURITY.md` — supported versions, private reporting via GitHub Security Advisories.
+  - `MIGRATION.md` — 0.x → 1.0 upgrade guidance + SemVer policy after 1.0.
+- **GitHub templates** in `.github/ISSUE_TEMPLATE/`: bug report, feature request, profile contribution. `.github/PULL_REQUEST_TEMPLATE.md` with reviewer checklist.
+- **`scripts/health.mjs`** — self-check command. Runs all detectors, validates all profiles, reports optional-dep status. Pretty + JSON modes. Wired into `npx ui-modernizer health`.
+- **`scripts/_cli.mjs`** — shared CLI helper exporting `parseArgs`, `isMainScript`, `readPackageVersion`. Standardizes `--version` / `--help` / `--json` / `--pretty` across all scripts.
+- **Unified JSON envelope** is now emitted by every public script:
+  ```
+  { ok, command, version, timestamp, payload | errors, warnings }
+  ```
+  Retrofitted: `detect-stack`, `detect-brand`, `dry-run`, `list-profiles`, `validate-profile`, `health`, `load-config`. The pre-existing `payload` fields are preserved one level deeper.
+- **`UMD-NNN` error codes everywhere** — all scripts that fail now emit structured errors via `makeError()`. `detect-stack` emits UMD-001/002/003; `validate-profile` emits UMD-050/051/052.
+- **Test suite grew from 18 → 41 tests** across 7 files: errors, response, cli, load-config, ast-extract, list-profiles, health. All pass.
+
+### Changed
+- `package.json` version → `1.0.0`.
+- `bin/install.mjs` — proper `--help` output, `--version`, friendlier `--help` text, new `health` subcommand, clearer "upgraded vs. installed" message, unknown-subcommand handling with exit code 2.
+- `SKILL.md` — preamble now references the API stability doc and error-code catalog. The 8-step workflow is unchanged (it's the stable contract).
+- README × 2 — added `[stable-1.0]` badge linking to `api-stability.md`. Roadmap marks v1.0 done.
+
+### Breaking changes from 0.x
+
+This is the *one-time* break at the 1.0 boundary. Future 1.x releases will not break further:
+
+- **JSON output shape** of `detect-stack`, `detect-brand`, `list-profiles`, `validate-profile` now nests the old top-level fields under `payload`. Old: `r.supported`. New: `r.payload.supported`. See [`MIGRATION.md`](./MIGRATION.md) for the upgrade path. (Already done for `load-config` in 0.9.)
+
+### Not changed
+- Trigger phrase `"modernize this UI"` — same.
+- `.ui-modernizer.json` schema — same, with new optional fields documented in `references/config-file.md`.
+- Backup / rollback flow — same.
+- The 8-step Skill workflow — same.
+- Style profile names and format — same.
+
+**新增**
+- **API 稳定性承诺** —— [`references/api-stability.md`](./references/api-stability.md) 明确定义了什么是公开 API（工作流步骤、触发短语、配置 schema、CLI 参数、JSON 信封形状、错误码、profile 格式），什么是内部实现（helper 模块内部、`payload` 字段级形状、prompt 措辞）。
+- **治理文档**:
+  - `CONTRIBUTING.md` —— 如何贡献 profile、代码风格、PR 清单。
+  - `CODE_OF_CONDUCT.md` —— Contributor Covenant 2.1 引用。
+  - `SECURITY.md` —— 支持版本、通过 GitHub Security Advisories 私下汇报。
+  - `MIGRATION.md` —— 0.x → 1.0 升级指南 + 1.0 后的 SemVer 策略。
+- **GitHub 模板** 在 `.github/ISSUE_TEMPLATE/`:bug、feature、profile 贡献。`.github/PULL_REQUEST_TEMPLATE.md` 含审阅清单。
+- **`scripts/health.mjs`** —— 自检命令。跑所有检测器、校验所有 profile、汇报可选依赖状态。pretty + JSON 两种模式。接入 `npx ui-modernizer health`。
+- **`scripts/_cli.mjs`** —— 共享 CLI helper,导出 `parseArgs` / `isMainScript` / `readPackageVersion`。统一 `--version` / `--help` / `--json` / `--pretty`。
+- **统一 JSON 信封** 已被所有公开脚本采用:
+  ```
+  { ok, command, version, timestamp, payload | errors, warnings }
+  ```
+  完成接入:`detect-stack`、`detect-brand`、`dry-run`、`list-profiles`、`validate-profile`、`health`、`load-config`。原有的 `payload` 字段保留在下一层。
+- **所有脚本都用 `UMD-NNN` 错误码** —— 通过 `makeError()` 发出结构化错误。`detect-stack` 出 UMD-001/002/003;`validate-profile` 出 UMD-050/051/052。
+- **测试从 18 → 41 个**,7 个文件:errors、response、cli、load-config、ast-extract、list-profiles、health。全过。
+
+**改动**
+- `package.json` 版本 → `1.0.0`。
+- `bin/install.mjs` —— 正经的 `--help` 输出、`--version`、新的 `health` 子命令、"upgraded vs installed" 区分、未知子命令以 exit 2 处理。
+- `SKILL.md` —— 序言引用 API 稳定性文档和错误码目录。8 步工作流不变(它是稳定契约)。
+- 中英 README —— 加 `[stable-1.0]` 徽章链接到 `api-stability.md`。roadmap 勾掉 v1.0。
+
+**0.x 到 1.0 的破坏性变更**
+
+这是**1.0 这一次的破坏性变更**,1.x 后续版本不再破坏:
+
+- `detect-stack` / `detect-brand` / `list-profiles` / `validate-profile` 的 JSON 输出形状现在把原顶层字段嵌套到 `payload` 下。旧:`r.supported`,新:`r.payload.supported`。升级路径见 [`MIGRATION.md`](./MIGRATION.md)。(`load-config` 在 0.9 已完成此迁移。)
+
+**未改动**
+- 触发短语 `"modernize this UI"` —— 不变。
+- `.ui-modernizer.json` schema —— 不变,新可选字段已在 `references/config-file.md` 文档化。
+- 备份 / 回滚流程 —— 不变。
+- 8 步 Skill 工作流 —— 不变。
+- Style profile 名称和格式 —— 不变。
+
+---
+
 ## [0.9.0] — 2026-05-18
 
 ### Added

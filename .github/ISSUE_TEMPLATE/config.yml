@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 General question or discussion
+    url: https://github.com/Rosalina7515/ui-modernizer/discussions
+    about: For open-ended questions, ideas, or "how do I…" — not bug reports.
+  - name: 📖 Documentation
+    url: https://github.com/Rosalina7515/ui-modernizer#readme
+    about: Check the README and references/ before filing an issue.

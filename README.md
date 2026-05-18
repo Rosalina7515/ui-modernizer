@@ -23,6 +23,7 @@ Linear · Vercel · Stripe · shadcn — pick a vibe, get the look.
 [![npm](https://img.shields.io/npm/v/ui-modernizer.svg?style=flat&color=000)](https://www.npmjs.com/package/ui-modernizer)
 [![license](https://img.shields.io/badge/license-MIT-000.svg?style=flat)](./LICENSE)
 [![claude code](https://img.shields.io/badge/Claude%20Code-Skill-D97757?style=flat)](https://claude.com/claude-code)
+[![stable](https://img.shields.io/badge/stable-1.0-22c55e?style=flat)](./references/api-stability.md)
 [![stars](https://img.shields.io/github/stars/Rosalina7515/ui-modernizer?style=flat&color=000)](https://github.com/Rosalina7515/ui-modernizer/stargazers)
 
 </div>
@@ -182,10 +183,10 @@ cd ../after && npm install && npm run dev
 - [x] **v0.7** — AST safety net (`@babel/parser` for JSX/TSX; tightened scanners for Vue/Svelte)
 - [x] **v0.8** — `.ui-modernizer.json` config + `--dry-run` mode
 - [x] **v0.9** — Polish: `UMD-NNN` error codes, unified JSON output, Vitest tests, "did you mean?" suggestions
+- [x] **v1.0** — Stable API contract ([SemVer commitment](./references/api-stability.md)), governance docs, health-check, 41-test suite
 
 ### Upcoming
 
-- [ ] **v1.0** — Stable API, docs site at ui-modernizer.dev, big-bang launch
 - [ ] **v1.1** — Tests & stability hardening (90%+ coverage)
 - [ ] **v1.2** — Docs site polish (interactive playground, profile gallery)
 - [ ] **v1.3** — AI reverse generation — "create a settings page like Linear"

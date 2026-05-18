@@ -16,6 +16,8 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { makeError } from './_errors.mjs';
+import { success, failure } from './_response.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = path.resolve(__dirname, '..');
@@ -59,41 +61,46 @@ function validateFile(file) {
   const { fm, body } = parseFrontmatter(text);
 
   if (!fm) {
-    errors.push('missing YAML frontmatter (file must start with ---)');
+    errors.push(makeError('UMD-050', { file, reason: 'missing YAML frontmatter (file must start with ---)' }));
     return { file, ok: false, errors, warnings };
   }
 
-  for (const key of REQUIRED_FRONTMATTER) {
-    if (!(key in fm)) errors.push(`missing required frontmatter key: ${key}`);
+  const missing = REQUIRED_FRONTMATTER.filter((k) => !(k in fm));
+  if (missing.length > 0) {
+    errors.push(makeError('UMD-051', { file, missing }));
   }
 
   // name format
   if (fm.name && !/^[a-z0-9-]+$/.test(String(fm.name))) {
-    errors.push(`name "${fm.name}" must be kebab-case ([a-z0-9-]+)`);
+    errors.push(makeError('UMD-050', { file, reason: `name "${fm.name}" must be kebab-case ([a-z0-9-]+)` }));
   }
 
   // name matches filename (skip if name starts with _ for internal files)
   if (fm.name && !String(fm.name).startsWith('_')) {
     const expected = path.basename(file, '.md');
     if (fm.name !== expected) {
-      errors.push(`name "${fm.name}" must match filename "${expected}"`);
+      errors.push(makeError('UMD-052', { file, providedName: fm.name, expectedName: expected }));
     }
   }
 
   // version
   if (fm.version && Number(fm.version) > 1.0) {
-    warnings.push(`profile version ${fm.version} is newer than spec v1.0 — modernizer may skip unknown fields`);
+    warnings.push({ message: `profile version ${fm.version} is newer than spec v1.0 — modernizer may skip unknown fields` });
   }
 
   // vibe length
   if (fm.vibe && String(fm.vibe).length > 80) {
-    warnings.push(`vibe is ${String(fm.vibe).length} chars (recommended ≤ 80)`);
+    warnings.push({ message: `vibe is ${String(fm.vibe).length} chars (recommended ≤ 80)` });
   }
 
   // sections
+  const missingSections = [];
   for (const heading of REQUIRED_SECTIONS) {
     const re = new RegExp(`^${heading.replace("'", "['’]")}\\b`, 'm');
-    if (!re.test(body)) errors.push(`missing required section: ${heading}`);
+    if (!re.test(body)) missingSections.push(heading);
+  }
+  if (missingSections.length > 0) {
+    errors.push(makeError('UMD-050', { file, missingSections }));
   }
 
   return { file, ok: errors.length === 0, errors, warnings, frontmatter: fm };
@@ -116,11 +123,29 @@ if (targets.length === 0) {
 
 const results = targets.map(validateFile);
 const anyFailed = results.some((r) => !r.ok);
-console.log(JSON.stringify({
-  ok: !anyFailed,
+// v1.0: wrap in unified envelope. Aggregate per-file errors at the top level.
+const aggregatedErrors = [];
+for (const r of results) {
+  if (!r.ok) for (const e of r.errors) aggregatedErrors.push(e);
+}
+const aggregatedWarnings = [];
+for (const r of results) {
+  if (r.warnings) for (const w of r.warnings) aggregatedWarnings.push(w);
+}
+const payload = {
   totalChecked: results.length,
   failed: results.filter((r) => !r.ok).length,
-  results: results.map((r) => ({ file: path.relative(process.cwd(), r.file), ok: r.ok, errors: r.errors, warnings: r.warnings })),
-}, null, 2));
+  results: results.map((r) => ({
+    file: path.relative(process.cwd(), r.file),
+    ok: r.ok,
+    errors: r.errors,
+    warnings: r.warnings,
+  })),
+};
+const envelope = anyFailed
+  ? failure('validate-profile', aggregatedErrors, aggregatedWarnings)
+  : success('validate-profile', payload, aggregatedWarnings);
+if (anyFailed) envelope.payload = payload;
+console.log(JSON.stringify(envelope, null, 2));
 
 process.exit(anyFailed ? 1 : 0);

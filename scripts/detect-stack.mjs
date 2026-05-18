@@ -189,14 +189,41 @@ if (stack.configFiles.globalsCSS) {
   } catch {}
 }
 
-// Verdict — v0.3: React/Next, Vue/Nuxt, or Svelte/SvelteKit all OK
+// Verdict — v0.3: React/Next, Vue/Nuxt, or Svelte/SvelteKit all OK.
+// v1.0: emit UMD-NNN codes via _errors.mjs; wrap output in unified envelope.
+import { makeError } from './_errors.mjs';
+import { success, failure } from './_response.mjs';
+
 const reasons = [];
-if (runtime === 'unknown') reasons.push('No supported runtime detected (need react, vue, or svelte in dependencies)');
-if (runtime === 'react' && !stack.next.present) reasons.push('Using React but Next.js is missing — MVP requires Next.js as the framework');
-if (runtime === 'vue' && !(stack.nuxt.present || framework === 'vite')) reasons.push('Using Vue but neither Nuxt nor Vite was detected');
-if (runtime === 'svelte' && !(stack.sveltekit.present || framework === 'vite')) reasons.push('Using Svelte but neither SvelteKit nor Vite was detected');
-if (!stack.tailwind.present) reasons.push('Tailwind CSS not in dependencies');
+const errors = [];
+if (runtime === 'unknown') {
+  reasons.push('No supported runtime detected (need react, vue, or svelte in dependencies)');
+  errors.push(makeError('UMD-002', { detected: { react: stack.react.present, vue: stack.vue.present, svelte: stack.svelte.present } }));
+}
+if (runtime === 'react' && !stack.next.present) {
+  reasons.push('Using React but Next.js is missing — MVP requires Next.js as the framework');
+  errors.push(makeError('UMD-003', { runtime, expected: 'next', detected: framework }));
+}
+if (runtime === 'vue' && !(stack.nuxt.present || framework === 'vite')) {
+  reasons.push('Using Vue but neither Nuxt nor Vite was detected');
+  errors.push(makeError('UMD-003', { runtime, expected: ['nuxt', 'vite'], detected: framework }));
+}
+if (runtime === 'svelte' && !(stack.sveltekit.present || framework === 'vite')) {
+  reasons.push('Using Svelte but neither SvelteKit nor Vite was detected');
+  errors.push(makeError('UMD-003', { runtime, expected: ['@sveltejs/kit', 'vite'], detected: framework }));
+}
+if (!stack.tailwind.present) {
+  reasons.push('Tailwind CSS not in dependencies');
+  errors.push(makeError('UMD-001', { suggestion: 'npm install -D tailwindcss' }));
+}
 const supported = reasons.length === 0;
 
-console.log(JSON.stringify({ supported, reasons, stack }, null, 2));
+// Backward-compat: payload keeps {supported, reasons, stack} so existing parsers work.
+const payload = { supported, reasons, stack };
+const envelope = supported
+  ? success('detect-stack', payload)
+  : failure('detect-stack', errors);
+// Carry the payload alongside errors for callers that want both:
+if (!supported) envelope.payload = payload;
+console.log(JSON.stringify(envelope, null, 2));
 process.exit(supported ? 0 : 1);

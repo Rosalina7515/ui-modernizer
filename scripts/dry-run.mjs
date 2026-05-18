@@ -212,7 +212,10 @@ if (isMain) {
     else if (result.effectiveCI) console.log(`  ✗ CI mode: exit ${result.exitCode} (set strict: false to make this non-fatal)`);
     else console.log(`  ⚠ Found ${result.totalCandidateChanges} candidate change(s). Run "modernize this UI" in Claude Code to apply.`);
   } else {
-    console.log(JSON.stringify(result, null, 2));
+    // v1.0: wrap in unified envelope (success path — dry-run "failure" via --ci
+    // is a *finding*, not an internal error, so it stays under payload).
+    const { success } = await import('./_response.mjs');
+    console.log(JSON.stringify(success('dry-run', result), null, 2));
   }
 
   process.exit(result.exitCode);

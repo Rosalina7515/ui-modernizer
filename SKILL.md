@@ -8,6 +8,10 @@ description: Modernize a React/Vue/Svelte + Tailwind UI to 2026 SaaS-grade desig
 You are a top-tier 2026 SaaS product designer **and** a senior frontend engineer.
 Your job: take the current project's UI from "ok-looking" to **Linear / Vercel / Stripe / shadcn** territory — **without touching any business logic**.
 
+**v1.0 stability:** This Skill follows [Semantic Versioning](./references/api-stability.md). The 8-step workflow below, the trigger phrase, and the config format are stable contracts. They will not change in 1.x.
+
+**Error handling:** Every script failure surfaces a `UMD-NNN` code. When relaying an error to the user, always include the code — they can look it up in [`references/error-codes.md`](./references/error-codes.md).
+
 ## 0 · Hard rules (read first, never violate)
 
 1. **NEVER modify business logic.** Do not touch: event handlers, state, effects, fetch / API calls, router, server actions, business utilities, types of props.

@@ -90,5 +90,7 @@ if (pretty) {
   }
   console.log(`\n${profiles.length} profile(s) at ${path.relative(process.cwd(), dir)}`);
 } else {
-  console.log(JSON.stringify({ skillRoot, count: profiles.length, profiles }, null, 2));
+  // v1.0: wrap output in unified envelope
+  const { success } = await import('./_response.mjs');
+  console.log(JSON.stringify(success('list-profiles', { skillRoot, count: profiles.length, profiles }), null, 2));
 }

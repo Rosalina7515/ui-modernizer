@@ -118,30 +118,33 @@ function detectInCSS() {
   return null;
 }
 
+// v1.0: wrap output in unified envelope (success path only — brand detection
+// always succeeds; the worst case is "not found → fallback to indigo").
+import { success } from './_response.mjs';
+
 const result = detectInTailwindConfig() ?? detectInCSS();
 
-if (result) {
-  console.log(JSON.stringify({
-    found: true,
-    name: result.name,
-    source: result.source,
-    evidence: result.evidence,
-    shape: result.shape,
-    tailwindFlavor: result.tailwindFlavor ?? null,
-    classPrefix: result.name,        // -> use bg-<name>-600, text-<name>-600
-    fallback: false,
-  }, null, 2));
-  process.exit(0);
-}
+const payload = result
+  ? {
+      found: true,
+      name: result.name,
+      source: result.source,
+      evidence: result.evidence,
+      shape: result.shape,
+      tailwindFlavor: result.tailwindFlavor ?? null,
+      classPrefix: result.name,
+      fallback: false,
+    }
+  : {
+      found: false,
+      name: null,
+      source: null,
+      evidence: 'No brand/primary/accent color detected in tailwind.config or globals.css',
+      shape: null,
+      tailwindFlavor: null,
+      classPrefix: 'indigo',
+      fallback: true,
+    };
 
-console.log(JSON.stringify({
-  found: false,
-  name: null,
-  source: null,
-  evidence: 'No brand/primary/accent color detected in tailwind.config or globals.css',
-  shape: null,
-  tailwindFlavor: null,
-  classPrefix: 'indigo',
-  fallback: true,
-}, null, 2));
+console.log(JSON.stringify(success('detect-brand', payload), null, 2));
 process.exit(0);

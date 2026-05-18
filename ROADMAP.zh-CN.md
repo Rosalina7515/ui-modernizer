@@ -8,7 +8,7 @@
 
 > 这是一份动态文档，计划可能根据社区反馈调整。想参与意见，欢迎开 [issue](https://github.com/Rosalina7515/ui-modernizer/issues) 或 [discussion](https://github.com/Rosalina7515/ui-modernizer/discussions)。
 
-**当前状态：v0.5 已发布。** 多框架（React/Vue/Svelte）、Tailwind v3+v4、品牌色检测、7 个可插拔风格 profile、opt-in 的 shadcn 组件替换。
+**当前状态：v1.0 已发布。** 稳定的 API 契约（SemVer 承诺）、治理文档、健康检查、41 个测试、所有脚本统一 JSON 信封、UMD-NNN 错误码。多框架（React/Vue/Svelte）、Tailwind v3+v4、品牌色检测、7 个可插拔风格 profile、opt-in 的 shadcn 组件替换、视觉回归测试、AST 安全网、`.ui-modernizer.json` 配置、dry-run 模式。
 
 通往 v1.0 的路径**刻意**拆成多个聚焦的 minor 版本——每个都是小而可测可发的迭代。v1.0 本身是"production-ready 的承诺"，不是又一次堆功能。
 
