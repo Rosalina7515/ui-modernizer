@@ -212,6 +212,8 @@ Style profiles are Markdown files describing a specific aesthetic. They override
 
 ## 4 · Failure modes & recovery
 
+Every script that fails emits a `UMD-NNN` error code with a one-paragraph remedy. See [`references/error-codes.md`](./references/error-codes.md) for the full catalog. When relaying an error to the user, include the code so they can look it up.
+
 | Symptom | Action |
 |---|---|
 | `next dev` won't start | Skip screenshots, continue, note in report |

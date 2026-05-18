@@ -181,10 +181,10 @@ cd ../after && npm install && npm run dev
 - [x] **v0.6** — Visual regression checks (diff DOM + computed styles before/after)
 - [x] **v0.7** — AST safety net (`@babel/parser` for JSX/TSX; tightened scanners for Vue/Svelte)
 - [x] **v0.8** — `.ui-modernizer.json` config + `--dry-run` mode
+- [x] **v0.9** — Polish: `UMD-NNN` error codes, unified JSON output, Vitest tests, "did you mean?" suggestions
 
 ### Upcoming
 
-- [ ] **v0.9** — Polish: error codes, unified JSON output, Vitest coverage
 - [ ] **v1.0** — Stable API, docs site at ui-modernizer.dev, big-bang launch
 - [ ] **v1.1** — Tests & stability hardening (90%+ coverage)
 - [ ] **v1.2** — Docs site polish (interactive playground, profile gallery)
@@ -212,7 +212,14 @@ ui-modernizer is mostly **prompt + Markdown rules**. Adding a new aesthetic is o
 
 Read the [profile format spec](./references/style-references/_PROFILE_FORMAT.md) before you start. It's short.
 
-No build, no tests, no TypeScript ceremony.
+### Running tests
+
+```bash
+npm install
+npm test
+```
+
+(Uses Vitest — `npm test` runs once, `npm run test:watch` watches.)
 
 ---
 

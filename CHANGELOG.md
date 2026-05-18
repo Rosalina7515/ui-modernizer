@@ -2,6 +2,64 @@
 
 All notable changes to ui-modernizer will be documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com).
 
+## [0.9.0] — 2026-05-18
+
+### Added
+- **`UMD-NNN` error code system.** Every script that can fail now emits a structured error with a code, title, one-paragraph remedy, and docs link. ~20 codes covering detection (UMD-001-003), config (UMD-010-012), backup (UMD-020-021), visual regression (UMD-030-032), AST (UMD-040-041), profiles (UMD-050-052), and substitution (UMD-060-061).
+- New reference: `references/error-codes.md` — full catalog with cause + remedy for every code.
+- New helper: `scripts/_errors.mjs` — exports `ERRORS` registry, `makeError(code, details)`, and `didYouMean(input, candidates)`.
+- New helper: `scripts/_response.mjs` — exports `success(command, payload)` and `failure(command, errors)` builders that wrap output in a consistent envelope:
+  ```
+  { ok, command, version, timestamp, payload | errors, warnings }
+  ```
+- **"Did you mean?" suggestions** based on Levenshtein distance. Typing `profile: "lineer"` now surfaces `didYouMean: "linear"` in the error details. Applies to profile names, brand classPrefix, and substitution component names.
+- **Vitest test suite.** Setup file `vitest.config.mjs` + initial tests in `tests/`:
+  - `errors.test.mjs` — error registry, makeError, didYouMean
+  - `load-config.test.mjs` — config loading, merge, validation, error codes
+  - `ast-extract.test.mjs` — Vue/Svelte best-effort scanners, graceful degradation
+- New npm scripts: `npm test` (run once), `npm run test:watch` (watch mode).
+- CI runs `npm test` on every push and PR.
+
+### Changed
+- `scripts/load-config.mjs` — now emits `UMD-010` / `UMD-011` / `UMD-012` error codes with structured details (field name, what's invalid, did-you-mean suggestion). JSON output uses the unified envelope shape.
+- `SKILL.md` — section 4 (Failure modes) now points at `references/error-codes.md` and instructs Claude to relay codes verbatim when surfacing errors.
+- `package.json` — version bumped to `0.9.0`; added `vitest` to devDependencies; added `test` / `test:watch` scripts.
+- `.github/workflows/ci.yml` — adds `npm install` + `npm test` steps after the profile validation.
+
+### Not changed (deliberate)
+- `bin/install.mjs` — Skill install flow unchanged; vitest is `devDependencies` only so end-users never see it.
+- Other scripts (`detect-stack`, `detect-brand`, `dry-run`, etc.) still output their pre-v0.9 shape — they'll migrate to the unified envelope incrementally in v0.9.x patches without breaking changes.
+- `extractFile()` / other v0.7 / v0.8 APIs — unchanged.
+
+**新增**
+- **`UMD-NNN` 错误码体系**。每个可能失败的脚本现在都会发出结构化错误,包含 code、title、一段补救说明、文档链接。约 20 个码,覆盖检测(UMD-001-003)、配置(UMD-010-012)、备份(UMD-020-021)、视觉回归(UMD-030-032)、AST(UMD-040-041)、profile(UMD-050-052)、替换(UMD-060-061)。
+- 新增参考文档:`references/error-codes.md` —— 每个码的完整目录,含原因 + 补救。
+- 新增辅助模块:`scripts/_errors.mjs` —— 导出 `ERRORS` 注册表、`makeError(code, details)`、`didYouMean(input, candidates)`。
+- 新增辅助模块:`scripts/_response.mjs` —— 导出 `success(command, payload)` 和 `failure(command, errors)` 构造器,把输出包成统一信封:
+  ```
+  { ok, command, version, timestamp, payload | errors, warnings }
+  ```
+- **"Did you mean?" 提示**(基于 Levenshtein 距离)。配置写错 `profile: "lineer"` 时错误详情里会出现 `didYouMean: "linear"`。适用于 profile 名、brand classPrefix、替换组件名。
+- **Vitest 测试套件**。配置文件 `vitest.config.mjs` + `tests/` 初始测试:
+  - `errors.test.mjs` —— 错误注册表、makeError、didYouMean
+  - `load-config.test.mjs` —— 配置加载、合并、校验、错误码
+  - `ast-extract.test.mjs` —— Vue/Svelte 扫描器、优雅降级
+- 新增 npm 脚本:`npm test`(跑一次)、`npm run test:watch`(监听模式)。
+- CI 每次 push / PR 都跑 `npm test`。
+
+**改动**
+- `scripts/load-config.mjs` —— 发出 `UMD-010` / `UMD-011` / `UMD-012` 错误码,带结构化详情(字段名、什么无效、did-you-mean 建议)。JSON 输出使用统一信封形状。
+- `SKILL.md` —— 第 4 节(失败模式)指向 `references/error-codes.md`,指示 Claude 在向用户反馈错误时原样转述错误码。
+- `package.json` —— 版本升到 `0.9.0`;`vitest` 加进 devDependencies;新增 `test` / `test:watch` 脚本。
+- `.github/workflows/ci.yml` —— 在 profile 校验之后加 `npm install` + `npm test` 步骤。
+
+**未改动**(刻意)
+- `bin/install.mjs` —— Skill 安装流程不变;vitest 只在 devDependencies,终端用户看不到。
+- 其他脚本(`detect-stack`、`detect-brand`、`dry-run` 等)仍输出 v0.9 之前的形状 —— 它们会在 v0.9.x 补丁版本里平滑迁移到统一信封,不会破坏向后兼容。
+- `extractFile()` / 其他 v0.7 / v0.8 API —— 不变。
+
+---
+
 ## [0.8.0] — 2026-05-18
 
 ### Added
@@ -19,8 +77,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - v0.7 AST extraction behavior — unchanged. Same output shape.
 - Visual regression, substitution, profiles — independent, still work.
 - Backup / rollback / report — unchanged.
-
-### 中文翻译
 
 **新增**
 - **`.ui-modernizer.json` 项目级配置**。在项目根目录放这个文件,把团队级默认行为固化下来:用哪个 profile、忽略哪些文件、单次最大文件数、严格模式、截图路由、可替换组件白名单、AST 是否强制。
@@ -59,8 +115,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - v0.6 visual regression flow — independent, still runs.
 - Backup / rollback / report — unchanged.
 - The Skill's hard rule "never touch business logic" remains — v0.7 just makes it mechanically verifiable for JSX/TSX.
-
-### 中文翻译
 
 **新增**
 - **基于 AST 的 class 字符串提取**。新增 `scripts/ast-extract.mjs`,列出 JSX / TSX / Vue / Svelte 文件里每一个 Tailwind class 字符串,带行号、列号、kind 和 `editable` 标志 —— 现代化时只编辑那些"已被 AST 确认为静态 class 容器"的字符串。
@@ -108,8 +162,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - Backup / rollback flow — unchanged.
 - The modernizer **never auto-reverts** based on risks. Risks are surfaced; the user decides what's intentional vs. accidental.
 - Screenshot scripts (`screenshot.mjs`, `compose-before-after.mjs`) — kept; can run in parallel with snapshots if the user wants PNGs.
-
-### 中文翻译
 
 **新增**
 - **视觉回归测试**。两个新脚本在改之前和改之后各抓一次每个路由的结构 + 计算样式快照,再 diff 出风险条目,以 "Risks" 章节写进 `report.md`。
@@ -164,8 +216,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - Backup / rollback / report flow — unchanged. The new substitution layer is *additionally* rolled back if typecheck fails.
 - Vue / Svelte path: substitution runs against `shadcn-vue` / `shadcn-svelte` ports; if those aren't set up, the step is skipped (not failed).
 
-### 中文翻译
-
 **新增**
 - **组件级替换**。需用户在对话里明确说**"and use shadcn"**（或 "with shadcn components"、"replace primitives"、"auto-install shadcn"）才会触发。开启后 Skill 会：
   1. 跑新增脚本 `scripts/detect-substitutions.mjs`，扫描所有 UI 文件里手写的、形似 shadcn primitive 的原生元素。
@@ -216,8 +266,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 ### Not changed
 - Detection / brand-color / framework workflow — unchanged.
 
-### 中文翻译
-
 **新增**
 - **可插拔风格 profile**。风格参考升级为正式的、可验证的、可插拔扩展：
   - **格式规范** v1.0 位于 `references/style-references/_PROFILE_FORMAT.md`：必填 YAML frontmatter（`name`、`displayName`、`version`、`vibe`、`darkFirst`、`recommendedFonts`、`authors`）+ 必填章节（`## Tokens`、`## Patterns`、`## Don'ts`）。
@@ -265,8 +313,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 ### Not changed (deliberate)
 - All visual rules in `design-system-2026.md`, `tailwind-modernization.md`, `component-patterns.md` — class names are framework-agnostic, so no edits needed.
 - Backup / rollback / report behavior — fully framework-agnostic, kept stable.
-
-### 中文翻译
 
 **新增**
 - **Vue 3 支持** —— Nuxt 3 *和* Vue + Vite 都支持。检测器通过 `nuxt` 依赖识别 Nuxt，扫描 `pages/`、`components/`、`layouts/`、`app.vue`。全局 CSS 定位在 Nuxt 约定的 `assets/css/main.css`（或其他兜底路径）。
@@ -317,8 +363,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - Backup / rollback / report behavior — stable.
 - Existing v0.1 class-mapping rules — they still apply; only the accent name is parameterized.
 
-### 中文翻译
-
 **新增**
 - **Tailwind v4 支持**。`detect-stack.mjs` 现在通过解析 `tailwindcss` 依赖版本号 + `globals.css` 里的 `@import "tailwindcss"` / `@theme` 指令，输出 `tailwind.flavor`（`v3 | v4`）。Skill 工作流据此分支：
   - v3 项目继续使用 `templates/globals.css.tpl` + `tailwind.config.tpl`。
@@ -356,8 +400,6 @@ All notable changes to ui-modernizer will be documented here. Format inspired by
 - `npx ui-modernizer` installer.
 - Bilingual README (English + 简体中文).
 - MIT license.
-
-### 中文翻译
 
 **新增**
 - 首次公开发布。
