@@ -166,12 +166,36 @@ cd ../after && npm install && npm run dev
 
 ## 🗺️ Roadmap
 
+**已发布：**
 - [x] **v0.1** —— MVP：React + Next.js + Tailwind v3、10 条现代化规则、备份/回滚
 - [x] **v0.2** —— Tailwind v4 支持，自动检测品牌色
 - [x] **v0.3** —— Vue 3（Nuxt / Vite）+ Svelte 5（SvelteKit / Vite）支持
 - [x] **v0.4** —— 可插拔风格 profile（7 个内置 + 自带 Markdown）
 - [x] **v0.5** —— 组件级替换（自动 install shadcn primitives）
-- [ ] **v1.0** —— 视觉回归测试（对照设计规范）
+
+**通往 v1.0：**
+- [x] **v0.6** —— 视觉回归测试（改前/改后 DOM + 计算样式 diff）
+- [ ] **v0.7** —— AST 安全网（用 `@babel/parser` / `vue-eslint-parser` / `svelte/compiler` 替换正则）
+- [ ] **v0.8** —— `.ui-modernizer.json` 配置文件 + `--dry-run` 模式
+- [ ] **v0.9** —— 打磨：错误码、统一 JSON 输出格式、Vitest 覆盖
+- [ ] **v1.0** —— API 稳定、文档站 ui-modernizer.dev、大爆炸级发布
+
+**v1.0 之后 —— v1.x 系列**（每个 minor 打开一个新受众；顺序可能根据需求调整）：
+
+| 版本 | 主题 |
+|---|---|
+| v1.1 | 测试 & 稳定性强化（覆盖率 90%+） |
+| v1.2 | 文档站精进（互动 playground、profile 画廊） |
+| v1.3 | **AI 反向生成** —— "create a settings page like Linear" |
+| v1.4 | A11y 可访问性审计 + 自动修复 |
+| v1.5 | 性能审计（图片、字体、hydration） |
+| v1.6 | VS Code + JetBrains 插件 |
+| v1.7 | Figma → 代码 |
+| v1.8 | 更多设计系统（Material 3、Fluent、Carbon、Ant） |
+| v1.9 | React Native + Expo（通过 NativeWind） |
+| v2.0 | 完整插件系统（ESLint 风格生态） |
+
+完整推理、战略备忘、明确不做的方向 → **[ROADMAP.zh-CN.md](./ROADMAP.zh-CN.md)**。
 
 ---
 

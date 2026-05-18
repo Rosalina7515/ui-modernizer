@@ -98,6 +98,38 @@ if (hasShots) {
     md.push('');
   }
 }
+// Risks section (v0.6+) — embed visual regression findings if available
+const risksPath = path.join(OUT, 'risks.json');
+if (existsSync(risksPath)) {
+  let risks;
+  try { risks = JSON.parse(readFileSync(risksPath, 'utf8')); } catch { risks = null; }
+  if (risks && risks.totals) {
+    const { high, medium, info } = risks.totals;
+    md.push('## ⚠️ Risks');
+    md.push('');
+    md.push(`> Visual regression detected: **${high} high · ${medium} medium · ${info} info**.`);
+    md.push('> Skim 🔴 HIGH items first. 🔵 INFO is usually intentional (the modernizer shifts colors on purpose).');
+    md.push('');
+    for (const route of risks.perRoute) {
+      md.push(`### Route \`${route.route}\` — ${route.counts.high} high · ${route.counts.medium} medium · ${route.counts.info} info`);
+      md.push('');
+      const severityEmoji = { high: '🔴 **HIGH**', medium: '🟡 **MEDIUM**', info: '🔵 INFO' };
+      // Print at most 20 findings per route to keep report.md readable
+      const findings = [...route.findings].sort((a, b) => {
+        const order = { high: 0, medium: 1, info: 2 };
+        return order[a.severity] - order[b.severity];
+      }).slice(0, 20);
+      for (const f of findings) {
+        md.push(`${severityEmoji[f.severity]} · \`${f.path}\` — ${f.message}`);
+        if (f.textBefore) md.push(`   text before: "${f.textBefore}"`);
+        if (f.textAfter) md.push(`   text after: "${f.textAfter}"`);
+      }
+      if (route.findings.length > 20) md.push(`_(+ ${route.findings.length - 20} more, see \`.ui-modernizer/risks.json\`)_`);
+      md.push('');
+    }
+  }
+}
+
 md.push('## Rollback');
 md.push('');
 md.push('```bash');

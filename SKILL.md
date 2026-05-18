@@ -73,14 +73,16 @@ Present the plan, then ask: "Proceed? (y / pick specific files / no)". If the us
 
 Run `node scripts/backup.mjs`. It copies all targeted files into `.ui-modernizer-backup/<ISO-timestamp>/`. Confirm backup path in your reply.
 
-### Step 4 — SCREENSHOT BEFORE
+### Step 4 — VISUAL SNAPSHOT BEFORE
 
-Run `node scripts/screenshot.mjs before`. It:
-- Starts `next dev` on a free port
-- Loads up to 5 routes (default: `/`, plus any routes discoverable from `app/`)
-- Saves PNGs to `.ui-modernizer/screenshots/before/`
+Run `node scripts/visual-snapshot.mjs before`. It:
+- Starts the project's dev server on a free port
+- Loads up to 5 routes (default: `/`, plus any routes discoverable from layout/router)
+- For each route, captures a structural + computed-style snapshot to `.ui-modernizer/snapshots/before/<route>.json`
 
-If Playwright is not installed, the script prints the install command — relay it to the user but **continue** the modernization. Screenshots are nice-to-have, not blocking.
+If Playwright is not installed, the script prints the install command — relay it to the user but **continue** the modernization. The visual-regression report (Step 7) will then be skipped, but the rest of the workflow is unaffected.
+
+*(Optional: if the user wants PNG screenshots too, also run `node scripts/screenshot.mjs before`. PNGs are nice-to-have; the JSON snapshot is the one that drives the Risks report.)*
 
 ### Step 5 — APPLY MODERNIZATION
 
@@ -140,17 +142,27 @@ If opted in:
 
 Vue / Svelte note: substitution targets the `shadcn-vue` / `shadcn-svelte` ports. If the project doesn't have those set up and the user declines to set them up, **skip Step 5b entirely** and tell them in the report.
 
-### Step 6 — SCREENSHOT AFTER
+### Step 6 — VISUAL SNAPSHOT AFTER + DIFF
 
-Run `node scripts/screenshot.mjs after`. Same routes, saves to `.ui-modernizer/screenshots/after/`. Then run `node scripts/compose-before-after.mjs` to produce `.ui-modernizer/before-after.png`.
+1. Run `node scripts/visual-snapshot.mjs after`. Same routes as Step 4, saves to `.ui-modernizer/snapshots/after/`.
+2. Run `node scripts/visual-diff.mjs`. It compares before vs. after and produces `.ui-modernizer/risks.json` containing:
+   - Missing elements (interactive, aria-labeled — high severity)
+   - Tag / role / aria changes
+   - WCAG contrast regressions (drops below 4.5:1)
+   - Font-size shrinks > 20%
+   - Color/background shifts on headings (info-level)
+
+If snapshots are missing (Playwright skipped), `visual-diff.mjs` exits gracefully and the Risks section is omitted from the report.
+
+*(Optional: also run `node scripts/screenshot.mjs after` + `node scripts/compose-before-after.mjs` for PNG before-after.)*
 
 ### Step 7 — REPORT
 
 Run `node scripts/report.mjs`. It generates `.ui-modernizer/report.md` with:
 - File-by-file diff summary
-- Embedded before/after thumbnails
+- **⚠️ Risks section** (v0.6+) — visual regression findings, sorted high → medium → info per route. Surfaces missing interactive elements, lost aria labels, WCAG contrast drops, font-size shrinks. Omitted if Step 6 was skipped.
 - Rollback command
-- Optional: detected risks (e.g., "I changed `className` on a `<form>` — verify focus styles still work")
+- (If screenshot scripts were also run) embedded before/after thumbnails
 
 ### Step 8 — DONE
 
